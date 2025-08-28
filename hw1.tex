@@ -1,0 +1,168 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+
+\title{CS 577: Homework 1}
+\author{David Deng}
+
+\begin{document}
+
+\maketitle
+
+\section*{Exercise 2.2}
+Show that the construction given in Section 2.2 is indeed a universal
+hash function, using the steps listed below.
+
+To recall the construction, we randomly construct a function
+$h : [n] \to [k]$ as follows.  
+First, let $p$ be any prime number $> n$.  
+Draw $a \in \{1, \ldots, p-1\}$ uniformly at random, and draw 
+$b \in \{0, \ldots, p-1\}$ uniformly at random.  
+We define a function $h(x)$ by
+\[
+h(x) = ((ax + b) \bmod p) \bmod k.
+\]
+
+\begin{enumerate}
+  \item Let $x_1, x_2 \in [n]$ with $x_1 \neq x_2$, and let 
+  $c_1, c_2 \in \{0, \ldots, p-1\}$ with $c_1 \neq c_2$.  
+  Show that the system of equations
+  \[
+  \begin{cases}
+  ax_1 + b \equiv c_1 \pmod p, \\
+  ax_2 + b \equiv c_2 \pmod p
+  \end{cases}
+  \]
+  uniquely determines $a \in \{1, \ldots, p-1\}$ and 
+  $b \in \{0, \ldots, p-1\}$.
+
+  \begin{itemize}
+    \item Step 1 implies that the map 
+    $(a, b) \mapsto (ax_1 + b \bmod p,\, ax_2 + b \bmod p)$ 
+    is a bijection between 
+    $\{1, \ldots, p-1\} \times \{0, \ldots, p-1\}$ and
+    $\{(c_1, c_2) \in \{0, \ldots, p-1\} : c_1 \neq c_2\}$.
+  \end{itemize}
+
+  \item Let $x_1, x_2 \in [n]$ with $x_1 \neq x_2$, and 
+  $c_1, c_2 \in \{0, \ldots, p-1\}$ with $c_1 \neq c_2$.  
+  Show that
+  \[
+  \Pr\big[ax_1 + b \equiv c_1 \pmod p, \; ax_2 + b \equiv c_2 \pmod p\big] 
+  = \frac{1}{p(p-1)}.
+  \]
+  (Here the randomness is over the uniformly random choices of $a$ and $b$.)
+
+  \item Fix $x_1, x_2 \in [n]$ with $x_1 \neq x_2$, and 
+  $c_1 \in \{0, \ldots, p-1\}$. Show that
+  \[
+  \sum_{\substack{c_2 \in \{0, \ldots, p-1\} \\ c_2 \not\equiv c_1 \pmod p \\ c_1 \equiv c_2 \pmod k}}
+  \Pr\big[ax_1 + b \equiv c_1 \pmod p, \; ax_2 + b \equiv c_2 \pmod p\big]
+  \;\;\le\;\; \frac{1}{pk}.
+  \]
+  \begin{itemize}
+    \item The LHS represents $\Pr[ax_1 + b \equiv c_1 \pmod p \;\wedge\; h(x_2) = h(x_1)]$.
+  \end{itemize}
+
+  \item Finally, show that
+  \[
+  \Pr[h(x_1) = h(x_2)] \;\le\; \frac{1}{k}.
+  \]
+\end{enumerate}
+
+\section*{Exercise 2.6}
+
+In this exercise, we develop a refined analysis that can reduce the
+additive error substantially in many real settings.
+
+Let $S$ denote the sum of frequency counts of all elements that are not $\epsilon$-heavy
+hitters:
+\[
+S = \sum_{e : p_e < \epsilon} f_e.
+\]
+
+Note that $S \leq m$, and $S$ might be much less than $m$ when the stream is dominated
+by heavy hitters.
+
+Show that, by increasing $w$ by a constant factor, and still using pairwise independent
+hash functions, one can estimate the frequency of every element with additive error
+at most $\epsilon S$ with high probability in $O\!\left(\tfrac{\log n}{\epsilon}\right)$ space.
+
+
+
+
+\section*{Exercise 3.3}
+
+The goal of this exercise is to show how to get constant-time access
+for $n$ keys with $O(n)$ space, using only universal hash functions.
+We will require the following fact that we ask you to prove.
+
+\begin{enumerate}
+  \item Let $h : [n] \to [k]$ be a universal hash function, with $k \geq n$.
+  Show that for $k \geq n^2$, $h$ has no collisions with probability at least $1/2$.
+
+  \medskip
+
+  Now we describe the data structure. We first allocate an array $A[1..n]$ of size $n$.
+  We have one universal hash function $h_0$ into $[n]$.
+  If we have a set of (say) $k$ collisions at an array cell $A[i]$, rather than making
+  a linked list of length $k$, we build another hash table, with a new universal hash
+  function $h_i$, of size $k^2$, with no collisions (per part 1).  
+  (We may have to retry if there is a collision.)
+  If the total size (summing the lengths of the first array and each of the secondary arrays)
+  comes out larger than (say) $5n$, we try again.
+
+  \item For each $i = 1, \ldots, n$, let $k_i$ be the number of keys that hash to the $i$-th cell.
+  We have
+  \[
+  \text{(sum of array sizes of our data structure)}
+  \;\leq\; n + \sum_{i=1}^n k_i^2.
+  \]
+  Show that
+  \[
+  \sum_{i=1}^n k_i^2 \;\leq\; n + O(\text{total number of collisions (w.r.t.\ } h_0)).
+  \]
+
+  \item Show that
+  \[
+  \mathbb{E}[\text{total number of collisions (w.r.t.\ } h_0)] \;\leq\; \tfrac{n}{2}.
+  \]
+
+  \item Show that
+  \[
+  \Pr\!\big[ (\text{sum of all array sizes}) > Cn \big] \;\leq\; \tfrac{1}{2}
+  \]
+  for some constant $C > 0$ (e.g., $C = 5$).
+\end{enumerate}
+
+Taken together, steps 1--3 above show that this approach will build a
+\emph{perfect hash table} over the $n$ keys in $O(n)$ space with probability
+of success at least $1/2$, using only universal hash functions.
+Even if it fails, we can keep repeating the construction until it succeeds.
+This approach works best in static settings, when the set of keys is fixed.
+
+\section*{Exercise 4.2}
+
+Let $G = (V, E)$ be an undirected graph. For $k \in \mathbb{N}$ a \emph{$k$-cut} 
+is a set of edges whose removal disconnects the graph into at least $k$ connected components. 
+Note that for $k \geq 3$, the minimum $k$-cut problem cannot easily be reduced to 
+$(s, t)$-flow. In fact, the problem is NP-Hard when $k$ is part of the input.
+
+\begin{enumerate}
+  \item Briefly describe how to modify the random-contractions algorithm 
+  to return a $k$-cut.
+
+  \item Analyze the probability that your modified algorithm returns a minimum $k$-cut.
+
+  \item Describe and analyze an algorithm, using your modified random-contractions
+  as a subroutine, that computes a minimum $k$-cut with high probability in
+  \[
+  O\!\left(n^{c_1 k} \log^{c_2} n\right)
+  \]
+  time for constants $c_1$ and $c_2$.  
+  (We leave it to you to identify these constants; as usual, the faster the running time, the better.)
+
+  \item How does your algorithm relate to the preceding statement that the $k$-cut problem 
+  is NP-Hard when $k$ is part of the input?
+\end{enumerate}
+
+\end{document}
