@@ -1,0 +1,131 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+
+\title{CS 577: Homework 0}
+\author{David Deng}
+
+\begin{document}
+
+\maketitle
+
+\section*{Exercise 0.10}
+
+Suppose you repeatedly flip a coin that is heads with fixed probability 
+$p \in (0,1)$.
+
+\begin{enumerate}
+  \item What is the expected number of coin flips until you obtain one heads? 
+  Prove your answer.
+  
+  \vspace{4cm} % space for your solution
+  
+  \item What is the expected number of coin flips until you obtain two heads? 
+  Prove your answer.
+  
+  \vspace{4cm} % space for your solution
+  
+  \item For general $k \in \mathbb{N}$, what is the expected number of coin 
+  tosses until you obtain $k$ heads? Prove your answer.
+  
+  \vspace{6cm} % space for your solution
+\end{enumerate}
+
+\section*{Exercise 1.2}
+
+Recall the quick-select algorithm introduced in Section 1.1.3. 
+The goal of this exercise is to prove that quick-select takes $O(n)$ time in expectation.
+Below we present two different approaches which offer two different perspectives.
+Both analyses should use linearity of expectation and we ask you to point this out explicitly.
+
+\begin{enumerate}
+  \item \textbf{Approach 1.} Analyze quick-select similarly to quick-sort, based on the sum
+  of indicators $X_{ij}$.
+  One approach is to reduce to a separate analysis for each of the following 4
+  classes of pairs:
+  \begin{enumerate}
+    \item $X_{ij}$ where $i < j < k$,
+    \item $X_{ij}$ where $i < k < j$,
+    \item $X_{ij}$ where $k < i < j$, and
+    \item $X_{ij}$ where either $i = k$ or $j = k$.
+  \end{enumerate}
+  For each case, show that the expected sum is $O(n)$.
+  
+  \vspace{6cm} % space for your solution
+  
+  \item \textbf{Approach 2.} The following approach can be interpreted as a randomized divide
+  and conquer argument. We are arguing that with constant probability, we
+  decrease the input by a constant factor, from which the fast (expected) running
+  time follows.
+  \begin{enumerate}
+    \item Consider again quick-select. Consider a single iteration where we pick a
+    pivot uniformly at random and throw out some elements. Prove that with
+    some constant probability $p$, we either sample the $k$th element or throw
+    out at least $1/4$ of the remaining elements.
+    
+    \vspace{3cm}
+    
+    \item For each integer $i$, prove that the expected number of iterations (i.e.,
+    rounds of choosing a pivot) of quick-select, where the number of elements
+    remaining is in the range $\bigl[(4/3)^i, (4/3)^{i+1}\bigr)$, is $O(1)$.
+    
+    \vspace{3cm}
+    
+    \item Fix an integer $i$, and consider the amount of time spent by quick-select
+    while the number of elements remaining is greater than $(4/3)^{i-1}$ and at
+    most $(4/3)^i$. Show that the expected amount of time is $\leq O((4/3)^i)$.
+    
+    \vspace{3cm}
+    
+    \item Finally, use the preceding part to show that the expected running time of
+    quick-select is $O(n)$.
+    
+    \vspace{3cm}
+  \end{enumerate}
+\end{enumerate}
+
+\section*{Exercise 1.4}
+
+This exercise is about a simple randomized algorithm for verifying
+matrix multiplication. Suppose we have three $n \times n$ matrices $A, B, C$. 
+We want to verify if $AB = C$. Of course one could compute the product $AB$ 
+and compare it entrywise to $C$. But multiplying matrices is slow: 
+the straightforward approach takes $O(n^3)$ time and there are 
+(more theoretical) algorithms with running time roughly $O(n^{2.37}\ldots)$. 
+We want to test if $AB = C$ in closer to $n^2$ time.
+
+The algorithm we analyze is very simple. Select a point 
+$x \in \{0,1\}^n$ uniformly at random. (That is, each $x_i \in \{0,1\}$ 
+is an independently sampled bit.) Compute $A(Bx)$ and $Cx$, and compare 
+their entries. (Note that it is much faster to compute $A(Bx)$ than $AB$.) 
+If they are unequal, then certainly $AB \neq C$ and we output false. 
+Otherwise we output true. Note that the algorithm is always correct if $AB = C$, 
+but could be wrong when $AB \neq C$. We will show that if $AB \neq C$, 
+the algorithm is correct with probability at least $1/2$.
+
+\begin{enumerate}
+  \item Let $y \in \mathbb{R}^n$ be a fixed nonzero vector, and let 
+  $x \in \{0,1\}^n$ be drawn uniformly at random. 
+  Show that $\langle x, y \rangle \; \overset{\text{def}}{=} \; 
+  \sum_{i=1}^n x_i y_i \neq 0$ with probability at least $1/2$.
+  
+  \vspace{5cm}
+  
+  \item Use the preceding result to show that if $AB \neq C$, 
+  then with probability at least $1/2$, $ABx \neq Cx$.
+  
+  \vspace{4cm}
+  
+  \item Suppose we want to decrease our probability of error to (say) $1/n^2$. 
+  Based on the algorithm above, design and analyze a fast randomized algorithm 
+  with the following guarantees:
+  \begin{itemize}
+    \item If $AB = C$, then it always reports that $AB = C$.
+    \item If $AB \neq C$, then with probability of error at most $1/n^2$, 
+    it reports that $AB \neq C$.
+  \end{itemize}
+  Your analysis should include the running time as well.
+  
+  \vspace{6cm}
+\end{enumerate}
+
+\end{document}
