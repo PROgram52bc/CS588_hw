@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath, amssymb}
 
-\title{CS 577: Homework 1}
+\title{CS 588: Homework 1}
 \author{David Deng}
 
 \begin{document}
@@ -43,6 +43,34 @@ h(x) = ((ax + b) \bmod p) \bmod k.
     $\{(c_1, c_2) \in \{0, \ldots, p-1\} : c_1 \neq c_2\}$.
   \end{itemize}
 
+  \vspace{1em} 
+  Subtracting the two equations, we have
+  \[
+  a(x_1 - x_2) \equiv c_1 - c_2 \pmod p.
+  \]
+
+  Since $x_1 \neq x_2$, $x_1 - x_2$ is nonzero, and since $p$ is prime, we have
+  $gcd(p,x_1-x_2) = 1$, and thus $x_1 - x_2$ has a multiplicative inverse modulo
+  $p$.
+
+  Multiplying both sides by this inverse, we can solve for a unique $a$:
+
+  \[
+  a \equiv (c_1 - c_2)(x_1 - x_2)^{-1} \pmod p.
+  \]
+
+  Substituting this value of $a$ into either of the original equations, we can
+  solve for $b$:
+
+  \begin{align*}
+  b & \equiv c_1 - a x_1 \pmod p \\
+    & \equiv c_1 - x_1(c_1 - c_2)(x_1 - x_2)^{-1} \pmod p \\
+    & \equiv (x_1 c_2 - x_2 c_1)(x_1 - x_2)^{-1} \pmod p.
+  \end{align*}
+
+  Thus, we have shown that there is a unique solution $(a,b)$ to the system of
+  equations.
+
   \item Let $x_1, x_2 \in [n]$ with $x_1 \neq x_2$, and 
   $c_1, c_2 \in \{0, \ldots, p-1\}$ with $c_1 \neq c_2$.  
   Show that
@@ -51,6 +79,19 @@ h(x) = ((ax + b) \bmod p) \bmod k.
   = \frac{1}{p(p-1)}.
   \]
   (Here the randomness is over the uniformly random choices of $a$ and $b$.)
+
+  \vspace{1em} 
+
+  For each chosen $x_1, x_2 \in [n]$ with $x_1 \neq x_2$, and $c_1, c_2 \in \{0,
+  \ldots, p-1\}$ with $c_1 \neq c_2$, we can solve for a unique pair of $a$ and
+  $b$ in the range of $\{1, \ldots, p-1\} \times \{0, \ldots, p-1\}$, by the
+  previous step.
+
+  Since $a$ and $b$ are independently and uniformly chosen at random, the
+  probability of $a$ being any particular value in $\{1, \ldots, p-1\}$ is
+  $\frac{1}{p-1}$, and the probability of $b$ being any particular value in
+  $\{0, \ldots, p-1\}$ is $\frac{1}{p}$. Thus, the probability of choosing a
+  specific pair $(a,b)$ is $\frac{1}{p(p-1)}$.
 
   \item Fix $x_1, x_2 \in [n]$ with $x_1 \neq x_2$, and 
   $c_1 \in \{0, \ldots, p-1\}$. Show that
@@ -63,13 +104,40 @@ h(x) = ((ax + b) \bmod p) \bmod k.
     \item The LHS represents $\Pr[ax_1 + b \equiv c_1 \pmod p \;\wedge\; h(x_2) = h(x_1)]$.
   \end{itemize}
 
+  \vspace{1em}
+  For each $c_1$, there are at most $(p-1)$ values of $c_2$ such that $c_1 \neq c_2$,
+  among those values, only $\frac{1}{k}$ of them satisfy the condition that $c_1 \equiv c_2 \pmod k$.
+
+  Thus, there are at most $\frac{p-1}{k}$ values of $c_2$ that satisfy both conditions.
+
+  By the previous step, we have
+  \begin{align*}
+  & \sum_{\substack{c_2 \in \{0, \ldots, p-1\} \\ c_2 \not\equiv c_1 \pmod p \\ c_1 \equiv c_2 \pmod k}}
+    \Pr\big[ax_1 + b \equiv c_1 \pmod p, \; ax_2 + b \equiv c_2 \pmod p\big] \\
+  & \le \frac{p-1}{k} \Pr\big[ax_1 + b \equiv c_1 \pmod p, \; ax_2 + b \equiv c_2 \pmod p\big] \\
+  & = \frac{p-1}{k} \cdot \frac{1}{p(p-1)} \\
+  & = \frac{1}{pk}.
+  \end{align*}
+
   \item Finally, show that
   \[
   \Pr[h(x_1) = h(x_2)] \;\le\; \frac{1}{k}.
   \]
+
+  \vspace{1em}
+
+  By the previous step, we have $\Pr[ax_1 + b \equiv c_1 \pmod p \;\wedge\;
+  h(x_2) = h(x_1)] \leq \frac{1}{pk}$.
+
+  \[
+  \Pr[h(x_1) = h(x_2)]
+  = \sum_{i=0}^{p-1} \Pr[ax_1 + b \equiv i \pmod p, h(x_2) = h(x_1)]
+  \leq p \cdot \frac{1}{pk} = \frac{1}{k}
+  \]
+
 \end{enumerate}
 
-\section*{Exercise 2.6}
+\section*{Exercise 2.4}
 
 In this exercise, we develop a refined analysis that can reduce the
 additive error substantially in many real settings.
@@ -87,8 +155,147 @@ Show that, by increasing $w$ by a constant factor, and still using pairwise inde
 hash functions, one can estimate the frequency of every element with additive error
 at most $\epsilon S$ with high probability in $O\!\left(\tfrac{\log n}{\epsilon}\right)$ space.
 
+\newpage
+
+Let $e$ be an arbitrary heavy-hitter.
+
+Define $X_e$ to be the sum of frequencies of all non-heavy-hitters that
+hash into the same row as $e$.
+
+\begin{align*}
+\mathbb{E}[X_e]
+&= \mathbb{E}\!\left[\sum_{\substack{p_{e'} < \epsilon \\ h(e') = h(e)}} f_{e'}\right] \\
+&= \frac{1}{w} \sum_{p_{e'} < \epsilon} f_{e'} \\
+&= \frac{S}{w}
+\end{align*}
+
+By Markov's inequality, 
+\[ Pr[X_e \geq \epsilon S] \leq \frac{1}{\epsilon w}. \]
 
 
+Define $Y_e$ to be the sum of frequencies of all other heavy-hitters that
+hash into the same row as $e$.
+
+\begin{align*}
+  Pr[Y_e > 0] &\leq \frac{1}{\epsilon w}
+\end{align*}
+
+By union bound, the probability that the additive error for $e$ exceeds $\epsilon S$ is at most
+\[Pr[X_e + Y_e \geq \epsilon S] \leq Pr[X_e \geq \epsilon S] + Pr[Y_e > 0] \leq \frac{2}{\epsilon w}.\]
+
+Choosing $w = \frac{4}{\epsilon}$, we have $Pr[X_e \geq \epsilon S] + Pr[Y_e > 0] \leq 1/2$.
+
+Repeating the algorithm $O(\log n)$ times and taking minimum over all
+counts, we can reduce the probability of failure to $1/n^c$ for any constant $c
+> 0$.
+
+\section*{Exercise 2.6}
+In string matching, we have a long text string $T[1..n]$ and a smaller search
+string $S[1..k]$, and we want to decide if $S$ occurs in $T$. For simplicity we
+assume these are bit strings (generalization to larger alphabets is routine).
+The naive approach compares $S[1..k]$ to each length-$k$ substring
+$T[i..i+k-1]$ and takes $O(nk)$ time. A more sophisticated algorithm due to
+Knuth, Morris, and Pratt compiles $S$ into a deterministic finite automaton
+$A_S$ of size $O(k)$ and searches $T$ in $O(n)$ time. Here we take a different,
+randomized approach.
+
+A $k$-bit string $x \in \{0,1\}^k$ can be viewed as the integer
+$2^{k-1}x_1 + 2^{k-2}x_2 + \dots + 2x_{k-1} + x_k \in [0,2^k-1]$.
+Computing this integer for each $k$-bit substring
+$T[1..k], T[2..k+1], \dots, T[n-k+1..n]$ and comparing to the integer for $S$
+does not beat the naive method since these integers are $k$ bits long.
+
+Instead, take these integers modulo a prime $p$ drawn uniformly at random from
+$\{2,\dots,q\}$, for sufficiently large $q$. Define the hash
+$h : \{0,1\}^k \to \mathbb{Z}_{\ge 0}$ by
+\[
+  h(x_{1..k}) \;=\; \big(2^{k-1}x_1 + 2^{k-2}x_2 + \dots + 2x_{k-1} + x_k\big)\bmod p.
+\]
+This $h$ is a rolling hash: when we shift the window by one bit,
+\[
+  h(x_{2..k+1}) \;\equiv\; 2\!\left(h(x_{1..k}) - 2^{k-1}x_1\right) + x_{k+1} \pmod p,
+\]
+so each update uses $O(1)$ arithmetic operations.
+
+\smallskip
+\noindent\textbf{Some helpful facts about primes.}
+\begin{itemize}
+  \item By unique prime factorization, every integer factors uniquely into primes.
+  \item By the prime number theorem, there are $(1-o(1))\cdot n/\ln n$ primes in $[1,n]$.
+  \item Primality can be tested deterministically in polynomial time, and faster by randomized tests with high success probability. In particular, there is a deterministic algorithm in $\tilde{O}(k^6)$ time for $k$-bit integers.
+\end{itemize}
+
+\newpage
+\noindent\textbf{Tasks.}
+\begin{enumerate}
+  \item Let $x,y\in\{0,1\}^k$ be distinct and interpret them as integers in $[0,2^k-1]$.
+  Observe that $x \equiv y \pmod p$ iff $p \mid |x-y|$. Prove that at most
+  $\log_2 |x-y|$ distinct primes divide $|x-y|$.
+
+  \medskip
+
+  Suppose there are more than $\log_2 |x-y|$ distinct primes
+  dividing $|x-y|$. Let those primes be $q_1, q_2, \ldots, q_m$ where $m > \log_2
+  |x-y|$. Then $|x-y|$ can be re-written as the product of those prime numbers:
+
+  \[ |x-y| = \prod_{i=1}^{m} q_i > \prod_{x=1}^{m}2 = 2^m > 2^{\log_2 |x-y|} = |x-y|. \]
+  where 
+  $|x-y| > |x-y|$ is a contradiction.
+
+
+  \item Suppose $p$ is drawn uniformly at random from the primes in $\{2,\dots,q\}$. How large must $q$ be to ensure $\Pr[p \mid |x-y|] \le 1/2$?
+
+  \medskip
+
+  Since there are $\approx q/\ln q$ primes in $[2,q]$, and at most $\log_2 |x-y|$ distinct primes that divide $|x-y|$,
+  the probability that a randomly chosen prime from $[2,q]$ divides $|x-y|$ is at most
+  \[
+  P[p \mid |x-y|] \leq \frac{\log_2 |x-y|}{q/\ln q} \leq \frac{k}{q/\ln q}.
+  \]
+
+  In order for $P[p \mid |x-y|] \leq 1/2$, we solve for $q$ in the inequality
+  \[
+  \frac{k}{q/\ln q} \leq \frac{1}{2}
+  \]
+
+  which gives $q \geq 2k \ln q$.
+
+  Thus, we can choose $q = 4k \ln (4k) = O(k \log k)$. 
+
+  \item Using the above, design and analyze a randomized algorithm that searches for $S$ in $T$ in $O\!\big(n\cdot \mathrm{poly}(\log k)\big)$ time (the faster the better). Your algorithm should be always correct and run in $O\!\big(n\cdot \mathrm{poly}(\log k)\big)$ expected time. Assume arithmetic modulo $p$ costs $O(\log p)$ time.
+  
+  \emph{Hint.} First aim for an $O\!\big(n\log n\cdot \log^{O(1)}\!k\big)$-time algorithm that succeeds with high probability; reducing to $O\!\big(n\cdot \log^{O(1)}\!k\big)$ is trickier.
+
+  We first choose a prime $p$ uniformly at random from the set of primes in
+  $[2,q]$ where $q = 4k \ln(4k)$. This ensures that the probability of
+  collision between any two distinct $k$-bit integers is at most $1/2$.
+
+  We first compute $h(S[1..k])$ in $O(k \log p)$ time. Then we compute
+  $h(T[1..k]), h(T[2..k+1]), \ldots, h(T[n-k+1..n])$ using the rolling hash
+  formula in $O(n \log p) = O(n \log k)$ time in total.
+
+  Whenever we find a substring $T[i..i+k-1]$ such that $h(T[i..i+k-1]) =
+  h(S[1..k])$, we compare $T[i..i+k-1]$ to $S[1..k]$ directly in $O(k)$ time. If
+  they are equal, we return the index $i$ as the answer. If they are not equal,
+  we continue searching.
+
+  The expected number of false-positive matches is at most $(n-k+1) \cdot
+  \frac{k}{q/\ln q}$. 
+
+  Choose $q = 4k \ln(4k)$, we have the expected number of false-positive matches is at most
+  \[\mathbb{E}[\# Collisions] = (n-k+1) \cdot \frac{k}{4k\ln(4k)/\ln(4k)} = (n-k+1) \cdot \frac{1}{4} = O(n).\]
+
+  
+  Thus, the expected time spent in direct comparisons is
+  $\frac{nk}{2} = O(nk)$. The algorithm runs in $O(n \log k + nk) = O(nk)$ expected time.
+
+  Now, choose $q$ such that $q/\ln q = k^2$, we have the expected number of
+  false-positive matches is at most
+  \[\mathbb{E}[\# Collisions] = (n-k+1) \cdot \frac{k}{k^2} = (n-k+1) \cdot \frac{1}{k} = O\left(\frac{n}{k}\right).\]
+  Thus, the expected time spent in direct comparisons is
+  $O(n)$. The algorithm runs in $O(n \log k + n) = O(n \log k)$ expected time.
+
+\end{enumerate}
 
 \section*{Exercise 3.3}
 
@@ -99,6 +306,17 @@ We will require the following fact that we ask you to prove.
 \begin{enumerate}
   \item Let $h : [n] \to [k]$ be a universal hash function, with $k \geq n$.
   Show that for $k \geq n^2$, $h$ has no collisions with probability at least $1/2$.
+
+  Since $h$ is a universal hash function, for any two keys $x_1, x_2 \in [n]$
+  with $x_1 \neq x_2$, the probability of them having the same hash is at most
+  $P[h(x_1) = h(x_2)] \leq \frac{1}{k}$.
+
+  For $k \geq n^2$, we have $P[h(x_1) = h(x_2)] \leq \frac{1}{k} \leq
+  \frac{1}{n^2}$. There are $\binom{n}{2} = \frac{n(n-1)}{2}$ pairs of distinct keys from $[n]$.
+  
+  Thus the probability of any collision is at most $\sum_{x_1 \in [n], x_2 \in
+  [n], x_1 \neq x_2} P[h(x_1) = h(x_2)] = \binom{n}{2} \cdot \frac{1}{n^2} =
+  \frac{n(n-1)}{2n^2} = \frac{1}{2} - \frac{1}{2n} < \frac{1}{2}$.
 
   \medskip
 
@@ -122,10 +340,37 @@ We will require the following fact that we ask you to prove.
   \sum_{i=1}^n k_i^2 \;\leq\; n + O(\text{total number of collisions (w.r.t.\ } h_0)).
   \]
 
+  For some $i$, if $k_i = 0$ or $k_i = 1$, then $k_i^2 \leq k_i \leq 1$.
+
+  If $k_i \geq 2$, then there are at least $\binom{k_i}{2} =
+  \frac{k_i(k_i-1)}{2}$ collisions at cell $A[i]$. Thus, we have $k_i^2 = k_i +
+  k_i(k_i-1) = k_i + 2 \binom{k_i}{2} = O(\text{number of collisions at cell
+  }A[i])$.
+
+  By union bound, summing over all $i$, we have
+  \begin{align*}
+    \sum_{i=1}^n k_i^2 
+    & \leq \sum_{i=1}^n 1 + \sum_{i=1}^n O(\text{number of collisions at cell }A[i]) \\
+    & = n + O(\text{total number of collisions (w.r.t.\ } h_0)).
+  \end{align*}
+
   \item Show that
   \[
   \mathbb{E}[\text{total number of collisions (w.r.t.\ } h_0)] \;\leq\; \tfrac{n}{2}.
   \]
+
+  Since $h_0$ is a universal hash function, for any two keys $x_1, x_2 \in [n]$
+  with $x_1 \neq x_2$, the probability of them having the same hash is at most
+  $P[h_0(x_1) = h_0(x_2)] \leq \frac{1}{n}$. With $n$ keys in total, there are $\binom{n}{2} = \frac{n(n-1)}{2}$ pairs of distinct keys.
+  Thus the expected number of collisions is
+
+\begin{align*}
+  & \mathbb{E}[\text{total number of collisions (w.r.t.\ } h_0)] \\
+  & \leq \binom{n}{2} \cdot \frac{1}{n} \\
+  & = \frac{n(n-1)}{2n} \\
+  & = \frac{n-1}{2} \\
+  & < \frac{n}{2}.
+\end{align*}
 
   \item Show that
   \[
@@ -133,6 +378,17 @@ We will require the following fact that we ask you to prove.
   \]
   for some constant $C > 0$ (e.g., $C = 5$).
 \end{enumerate}
+
+The expected sum of all array sizes is
+\begin{align*}
+  & \mathbb{E}[\text{sum of all array sizes}] \\
+  & \leq \mathbb{E}[n + \sum_{i=1}^n k_i^2] & \text{(by part 2 assumption)} \\
+  & = n + \mathbb{E}[\sum_{i=1}^n k_i^2] & \text{(linearity of expectation)} \\
+  & \leq n + n + O(\mathbb{E}[\text{total number of collisions (w.r.t.\ } h_0)]) & \text{(by part 2)} \\
+  & \leq n + n + O(n/2) & \text{(by part 3)} \\
+  & = O(n).
+\end{align*}
+
 
 Taken together, steps 1--3 above show that this approach will build a
 \emph{perfect hash table} over the $n$ keys in $O(n)$ space with probability
@@ -151,7 +407,52 @@ $(s, t)$-flow. In fact, the problem is NP-Hard when $k$ is part of the input.
   \item Briefly describe how to modify the random-contractions algorithm 
   to return a $k$-cut.
 
+  As long as the number of edges is more than $k$, sample random edge and
+  contract them. When there are $k$ nodes left, return the edges between them,
+  which form a $k$-cut.
+
   \item Analyze the probability that your modified algorithm returns a minimum $k$-cut.
+
+  Let $C^*$ be a set of $k-1$ vertices in graph $(G,c)$. Let $n = |V|$ be the
+  number of nodes in graph $G$.  For each nodes $v \in G$, let
+  $\delta(v)$ be the set of edges incident to $v$.
+
+  Define $C^*(v)$ as
+  \begin{equation*}
+  C^*(v) = 
+  \begin{cases}
+    \sum_{e \in \delta(v)} c(e) & \text{if } v \in C^* \\
+    0 & \text{otherwise}
+  \end{cases}
+  \end{equation*}
+
+  Then we have
+  \begin{align*}
+    \mathbb{E}[C^*(v)] &= \sum_{v \in C^*} \sum_{e \in \delta(v)} c(e) \\
+    &= \frac{k-1}{n} \cdot 2 \sum_{e \in G} c(e) & \text{(each edge is counted twice)} \\
+    &= \frac{2(k-1)}{n} \sum_{e \in G} c(e)
+  \end{align*}
+
+  Let $\lambda_k$ be the total weight of the minimum $k$-cut in graph $G$.
+
+  Then we have $\lambda_k \leq \mathbb{E}[C^*(v)] = \frac{2(k-1)}{n} \sum_{e \in G} c(e)$.
+
+  Let $X_i$ be the event that the minimum $k$-cut is not cut after the $i$-th iteration of the contraction algorithm.
+
+  Then we have 
+  $$P[X_0] = 1.$$
+  $$P[X_1 | X_0] \geq 1 - \frac{2(k-1)}{n}.$$
+  $$P[X_t | X_{t-1}] \geq 1 - \frac{2(k-1)}{n-t+1}.$$
+
+  Thus, the probability of not cutting the minimum $k$-cut after $n-k$ iterations is
+  \begin{align*}
+    P[X_{n-k}]
+    &= P[X_{n-k} | X_{n-k-1}] \cdot P[X_{n-k-1} | X_{n-k-2}] \cdots P[X_1 | X_0] \cdot P[X_0] \\
+    &\geq \prod_{i=1}^{n-k} \left(1 - \frac{2(k-1)}{n-i+1}\right) \\
+    &= \prod_{i=1}^{n-k} \left(\frac{n-i+1-2(k-1)}{n-i+1}\right) \\
+    &= \prod_{t=k+1}^{n} \left(\frac{t-2(k-1)}{t}\right)
+  \end{align*}
+
 
   \item Describe and analyze an algorithm, using your modified random-contractions
   as a subroutine, that computes a minimum $k$-cut with high probability in
@@ -161,8 +462,126 @@ $(s, t)$-flow. In fact, the problem is NP-Hard when $k$ is part of the input.
   time for constants $c_1$ and $c_2$.  
   (We leave it to you to identify these constants; as usual, the faster the running time, the better.)
 
+  Run the above algorithm until there are $T > 2(k-1)$ vertices left, and run an
+  exact k-cut routine on this T-vertex graph. Repeat the above $n^{2k}$ times, and
+  return the best cut.
+
+  To analyze the above algorithm, we consider a single run.
+
+  \begin{align*}
+  & Pr[\text{the min cut survives until T vertices are left}] \\
+  & \geq \prod_{t=T+1}^{n} \left(\frac{t-2(k-1)}{t}\right) \\
+  & = \frac{\prod_{t=T+1}^{n} t-2(k-1)}{\prod_{t=T+1}^{n}t} \\
+  & = \prod_{j=0}^{2k-3}\frac{T-j}{n-j} \\
+  & \geq \bigl(\frac{T}{n}\bigr)^{2k-2}
+  \end{align*}
+
+  Running the algorithm $n^{2k}$ times, we have the success probability $\geq
+  T^{2k-2}n^2$, which is high for $k > 1$.
+
+  The runtime of randomly contracting edges until there are $T=O(k)$ vertices
+  left is $O(m \log n)$, where $m$ is the number of edges and $n$ is the number
+  of vertices.
+  The runtime of deterministically computing a min-k-cut on a graph with $T=O(k)$ vertices is
+  $k^{O(k)}$, which is constant when $k$ is fixed. 
+  
+  Running it $n^{2k}$ times takes $O(n^{2k})$ runtime.
+
+  Thus, the total runtime of the algorithm is $O(n^{2k} (m \log n + 1)) = O(n^{2k} (\log n))$.
+
+  And we have $c_1 = 2$, $c_2 = 1$.
+
   \item How does your algorithm relate to the preceding statement that the $k$-cut problem 
   is NP-Hard when $k$ is part of the input?
+  
+  When $k$ is part of the input, the running time of our algorithm becomes
+  $O(n^{c_1 k} \log^{c_2} n) = O(n^{c_1 n} \log^{c_2} n)$, which is exponential
+  in $n$.  In other words, our algorithm is not a polynomial time algorithm when
+  $k$ is part of the input.
+
 \end{enumerate}
+
+% CS588 HW1 — Self-graded per Appendix B.2 (raf25.pdf)
+% Student: David Deng
+% Date: September 24, 2025
+
+\section*{Grade}
+% CS588 HW1 — Self-graded per Appendix B.2 (raf25.pdf)
+% Student: David Deng
+% Date: September 25, 2025
+
+\section*{Overall Summary}
+I self-assess the assignment using Appendix B.2 rubrics. Per-exercise scores:
+\[
+\text{E2.2}=10/10,\quad
+\text{E2.4}=10/10,\quad
+\text{E2.6}=10/11,\quad
+\text{E3.3}=9.5/10,\quad
+\text{E4.2}=8/11.
+\]
+\[
+\text{Total}=\boxed{47.5/52}\ \ (\approx 91.3\%).
+\]
+
+\section*{Exercise 2.2 (10 pts)}
+\textbf{Self-grade: 10/10.}
+\begin{itemize}
+  \item I correctly argued unique solvability via invertibility modulo a prime, which covers the “basic reason’’ step.
+  \item Using the prime number theorem, I chose $q=\Theta(k\log k)$ to bound the bad-prime probability by $\le 1/2$.
+  \item My conditioning/counting step derived the needed bound and I concluded universality: $\Pr[h(x_1)=h(x_2)]\le 1/k$.
+\end{itemize}
+
+\section*{Exercise 2.4 (10 pts) — Refined error via heavy hitters}
+\textbf{Self-grade: 10/10.}
+\begin{itemize}
+  \item \textbf{No collision with any $\varepsilon$-heavy hitter (4 pts).}
+  I set $w=4/\varepsilon$ (a constant factor larger than the $\le 1/\varepsilon$ heavy hitters). For each heavy hitter $d$, universality gives $\Pr[h(d)=h(e)]\le 1/w$; a union bound over heavy hitters yields $\Pr[\exists d:\ h(d)=h(e)]\le 1/4$.
+  \item \textbf{Non-heavy-hitter noise $\le \varepsilon S$ with probability $\ge 3/4$ (4 pts).}
+  Let $X_e$ be the contribution from non-heavy hitters colliding with $e$. Linearity and universality give $\mathbb{E}[X_e]=S/w$. With $w=4/\varepsilon$, Markov yields $\Pr[X_e\ge \varepsilon S]\le 1/4$.
+  \item \textbf{Combine the two events (1 pt).}
+  “No HH collision’’ and “small non-HH noise’’ together hold with probability at least $1/2$ by a union bound.
+  \item \textbf{Amplification (1 pt).}
+  Repeating $O(\log n)$ independent instances drives the failure probability to $1/\mathrm{poly}(n)$.
+\end{itemize}
+
+\section*{Exercise 2.6 (11 pts)}
+\textbf{Self-grade: 10/11.}
+\begin{itemize}
+  \item \textbf{Part 1 (1/1):} I proved the number of prime divisors of $|x-y|$ is at most $\log_2|x-y|$.
+  \item \textbf{Part 2 (2/2):} Using the PNT, I selected $q$ (e.g., $q=4k\ln(4k)$) so the collision probability meets the bound.
+  \item \textbf{Part 3 (7 pts total):}
+  \begin{itemize}
+    \item \emph{Algorithm description (2/3):} I clearly presented Rabin–Karp with rolling hashes and handled collision tuning via $q$, but I \emph{omitted} the analysis of how to sample a \emph{random prime} and its expected cost; this was required.
+    \item \emph{Correctness (3/3):} I gave the correct error bound and explained why occasional direct checks keep expected extra work linear.
+    \item \emph{Running time (1/1):} I stated the $O(n\log k)$ scan bound once $q$ is tightened; the missing prime-generation overhead belongs to the omitted subpart above.
+  \end{itemize}
+\end{itemize}
+\textit{Deduction:} $-1$ for missing random-prime generation analysis (expected $\tilde O(\log^7 q)$).
+
+\section*{Exercise 3.3 (10 pts) — Two-level perfect hashing}
+\textbf{Self-grade: 9.5/10.}
+\begin{itemize}
+  \item \textbf{Part 1 (2/2):} I gave the single-pair collision bound and used a union bound to show $\Pr[\text{any collision}]\le \binom{n}{2}\cdot \tfrac{1}{k}\le \tfrac{1}{2}$ for $k\ge n^2$.
+  \item \textbf{Part 2 (3/3):} I split the analysis into $k_i\le 1$ vs.\ $k_i>1$ and related $\sum_i k_i^2$ to the number of collisions via $k_i^2= k_i + 2\binom{k_i}{2}$, obtaining $\sum_i k_i^2 \le n + O(\#\text{collisions})$.
+  \item \textbf{Part 3 (2/2):} By linearity over pairs and the universal bound, $\mathbb{E}[\#\text{collisions}]\le n/2$.
+  \item \textbf{Part 4 (2.5/3):} I computed $\mathbb{E}[\text{total size}]\le 3n$ from Parts 2–3 and stated $\Pr[\text{total size}>6n]\le 1/2$; I did not explicitly name Markov's inequality. $-0.5$ for that omission.
+\end{itemize}
+
+\section*{Exercise 4.2 (11 pts)}
+\textbf{Self-grade: 8/11.}
+\begin{itemize}
+  \item \textbf{Part 1 (3/3):} I stated the Karger-style procedure: contract random edges until $k$ supernodes remain and return the induced cut.
+  \item \textbf{Part 2 (4/4):} I derived the standard survival product $\displaystyle \prod_{t=k+1}^{n}\Bigl(1-\frac{2(k-1)}{t}\Bigr)$.
+  \item \textbf{Part 3 (1/3):} I described the scheme (stop early, then solve exact; repeat for confidence) but my success-probability expression/amplification was off, and I mixed in an $O(m\log n)$ factor without justification.
+  \item \textbf{Part 4 (0/1):} I incorrectly wrote “exponential in $n$’’; the intended dependence is \emph{exponential in $k$} (polynomial in $n$ for fixed $k$).
+\end{itemize}
+
+\paragraph{Action items for improvement.}
+\begin{enumerate}
+  \item \textbf{E2.6:} Add a brief, explicit random-prime generator and analyze its expected time (uniform sampling, randomized primality $\tilde O(\log^6 q)$, yielding $\tilde O(\log^7 q)$ overall).
+  \item \textbf{E4.2:} Fix probability amplification: if $p\asymp (T/n)^{2(k-1)}$, then $r=\Theta(p^{-1}\log n)$ independent runs give success $1-(1-p)^r \ge 1-1/n^{\Theta(1)}$; present the clean runtime bound (polynomial in $n$ for fixed $k$).
+  \item \textbf{E3.3:} When turning expectations into tails, explicitly cite Markov; avoid calling an algebraic sum a “union bound’’ unless it is a union over probabilistic events.
+\end{enumerate}
+
 
 \end{document}

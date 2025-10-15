@@ -1,0 +1,218 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+
+\title{CS 588: Homework 2}
+\author{David Deng}
+
+\begin{document}
+\maketitle
+
+\section*{Exercise 5.1}
+
+IDK
+
+\section*{Exercise 6.3}
+For each variable $x_i$, we compute the conditional expected number of satisfied clauess given $x_i = \text{true}$ and $x_i = \text{false}$ respectively, assuming others are picked by rounding up the LP solution.
+
+For a particular formula $C_1 \land \cdots \land C_m$,
+let $Z_{lp}$ be the number of clauses satisfied by assigning variables according to the randomized rounding of the LP solution. We know that this solution is a $1-(1/e)$-approximation to the optimum solution.
+
+To turn it into a deterministic algorithm, for each variable $x_i$, we choose its value by computing the conditional expectation of $Z_{lp}$ based the value of $x_i$. 
+
+For a clause $C_j$, let $U(C_j)$ be the list of unassigned literals in $C_j$. 
+Let $$y(\ell) = \begin{cases}
+y_i \phantom{1 - } \quad \text{if } \ell = \bar{y_i} \text{ for some } i\\
+1 - y_i \quad \text{if } \ell = {y_i} \text{ for some } i
+\end{cases}$$
+given some partial assignment $S \subseteq \{x_i = v_i \vert i \in [n]\}$,
+we compute the conditional probability of clause being satisfied,
+$p[C_j \vert S ] = 1 - \prod_{\ell \in U(C_j[x_i=true])} y(\ell)$
+Now given some partial assignment $S$, the expectation of the number of clauses satisfied is:
+$\mathbb{E}[Z_{lp}\vert S] = \sum_{j \in [m]} p[C_j\vert S]$, 
+
+We can extend $S$ to compute the conditional expectation of the number of satisfied clauses when assigning some $x_i$ to true and false respectively:
+
+$$\mathbb{E}[Z_{lp}\vert S[x_i = \text{true}]] = \sum_{j \in [m]} p[C_j\vert S[x_i = \text{true}]]$$
+$$\mathbb{E}[Z_{lp}\vert S[x_i = \text{false}]] = \sum_{j \in [m]} p[C_j\vert S[x_i = \text{false}]]$$
+
+For each var $x_i$ perform the following steps:
+
+If $\mathbb{E}[Z_{lp}\vert S[x_i = \text{true}]] > \mathbb{E}[Z_{lp}\vert S[x_i = \text{false}]]$, then set to true, otherwise set to false, and add the new assignment to $S$, repeat until all variables are assigned.
+
+Since at each step, we are choosing the solution that leads to more number of clauses being satisfied, comparing to the LP solution, this algorithm also leads to a $1-(1/e)$-approximation to the optimum solution.
+
+For some implicit $S$, we write $x_i = v$ as a short hand of $S[x_i = v]$.
+Let $n(C)$ be the number of unresolved variables in clause $C$. 
+
+Then we have
+
+$$\mathbb{E}[Z_{u}\vert x_i = \text{true}] = \sum_{j:x_i \in C_j} 1 + \sum_{j:\bar{x_i} \in C_j} 1 - 2^{-n(C_j)}$$
+
+, which is the expected number of clauses satisfied assigning x = true, under random uniform assignment.
+
+$$\mathbb{E}[Z_{u}\vert x_i = \text{false}] = \sum_{j:\bar{x_i} \in C_j} 1 + \sum_{j:x_i \in C_j} 1 - 2^{-n(C_j)}$$
+, which is the expected number of clauses satisfied assigning x = false, under random uniform assignment.
+
+For each var $x_i$ perform the following steps:
+
+If $\frac{1}{2}\mathbb{E}[Z_{lp}\vert x_i = \text{true}] + \frac{1}{2}\mathbb{E}[Z_{u}\vert x_i = \text{true}] > \frac{1}{2}\mathbb{E}[Z_{lp}\vert x_i = \text{false}] + \frac{1}{2}\mathbb{E}[Z_{u}\vert x_i = \text{false}]$, then set $x_i$ to true, otherwise set $x_i$ to false.
+
+Since at each step, we are choosing the solution that leads to more number of clauses being satisfied, comparing to the hybrid LP + uniform random solution, this algorithm also leads to a $3/4$-approximation to the optimum solution.
+
+\section*{Exercise 6.4}
+
+IDK
+
+\newpage
+\section*{Exercise 7.5}
+
+
+\begin{enumerate}
+  \item \textbf{Deterministic threshold rule.}
+    If the elevator takes more than \(1\) minute \(45\) seconds (\(105\)s) to arrive, go by stairs; otherwise take the elevator.
+
+  \item \textbf{Equivalent wait-then-stairs description and analysis.}
+    Wait for \(105\)s. If the elevator comes, take it; otherwise, take the stairs.
+    \begin{enumerate}
+      \item Elevator arrives before \(105\)s: both OPT and the algorithm take the elevator, so the ratio is \(1\).
+      \item Elevator arrives at or after \(105\)s: OPT walks immediately (\(120\)s). The algorithm waits \(105\)s then walks (\(105+120=225\)s). The ratio is
+      \[
+        \frac{225}{120} \;=\; \frac{15}{8}.
+      \]
+    \end{enumerate}
+    Thus the worst-case competitive ratio is \(15/8\).
+
+  \item \textbf{One-coin randomized policy.}
+    Flip a fair coin once before \(60\)s. If heads, go by stairs at \(60\)s; if tails, keep waiting until the elevator arrives or until \(105\)s (then take the stairs).
+    \begin{enumerate}
+      \item \(t<60\): the elevator arrives before the decision point, so the algorithm takes the elevator. Ratio \(=1\).
+      \item \(60\le t<105\): write \(t=60+\delta\) with \(0\le \delta<45\).
+        \[
+          \mathrm{OPT}(t)=t+15=75+\delta.
+        \]
+        The algorithm takes stairs at \(60\)s with probability \(1/2\) (cost \(60+120=180\)s), otherwise takes the elevator at \(t\) (cost \(t+15=75+\delta\)). Hence
+        \[
+          \mathbb{E}[\text{ALG}\mid t]
+          \;=\; \tfrac{1}{2}\cdot 180 + \tfrac{1}{2}\cdot (75+\delta)
+          \;=\; 127.5 + \delta/2,
+        \]
+        and the competitive ratio is
+        \[
+          r(\delta) \;=\; \frac{127.5+\delta/2}{75+\delta}.
+        \]
+        This \(r(\delta)\) is decreasing in \(\delta\) on \([0,45)\), so it is maximized at \(\delta=0\), where \(r(0)=127.5/75=1.7<15/8\).
+      \item \(t\ge 105\): with probability \(1/2\) you take stairs at \(60\)s (\(180\)s total), otherwise you leave at \(105\)s (\(225\)s total):
+        \[
+          \mathbb{E}[\text{ALG}\mid t\ge 105] \;=\; \tfrac{1}{2}\cdot 180 + \tfrac{1}{2}\cdot 225 \;=\; 202.5.
+        \]
+        Here \(\mathrm{OPT}=120\), so the ratio is \(202.5/120=1.6875<15/8\).
+    \end{enumerate}
+    Therefore this one-coin strategy achieves a worst-case ratio strictly better than \(15/8\).
+\end{enumerate}
+
+\newpage
+
+\section*{Exercise 8.6}
+
+We want to have the additive error depend on the $l_2$ norm, which is $\sum x_i^2$ for the count of each element $x_i$.
+\begin{enumerate}
+  \item 
+The expected sum of noise is 0, therefore it's unbiased.
+We have $A[h(i)] = \sum_{h(i) = h(j)} g(j)x_j$, 
+for a particular $i$, 
+
+\begin{align*}
+g(i)A[h(i)]
+&= g(i)\sum_{j:\,h(i)=h(j)} g(j)\,x_j \\
+&= g(i)\bigl(\sum_{\substack{j\neq i\\ h(i)=h(j)}} g(j)\,x_j + g(i)\,x_i\bigr) \\
+&= g(i)\sum_{\substack{j\neq i\\ h(i)=h(j)}} g(j)\,x_j + g(i)^2 x_i
+\end{align*}
+
+since $g^2(i) = 1$,
+
+$$\mathbb{E}[y_i] = \mathbb{E}[g(i)A[h(i)]] = \mathbb{E}\bigl[g(i)\sum_{i\neq j, h(i) = h(j)} g(j)x_j\bigr] + x_i$$
+
+By pair-wise independence, $\Pr[g(i) = g(j) \vert x \neq j] = \frac{1}{2}$, so $\Pr[g(i)g(j) = 1] =\Pr[g(i)g(j) = -1] = \frac{1}{2}$ for all $i \neq j$, thus
+$$\mathbb{E}[g(i)g(j)] = 1 \cdot \frac{1}{2} - 1 \cdot \frac{1}{2} = 0$$
+
+\begin{align*}
+\mathbb{E}\Bigl[g(i)\!\sum_{\substack{j\neq i\\ h(j)=h(i)}} g(j)\,x_j \Bigr]
+&= \mathbb{E}\Bigl[\sum_{\substack{j\neq i\\ h(j)=h(i)}} g(i)g(j)\,x_j \Bigr] \\
+&= \sum_{\substack{j\neq i\\ h(j)=h(i)}} x_j\,\mathbb{E}\!\bigl[g(i)g(j)\bigr] \\
+&= 0
+\end{align*}
+
+Thus we have
+$$\mathbb{E}[y_i] = x_i$$
+so the estimator $y_i$ is unbiased for $x_i$.
+  \item Variance of $y_i$
+  \begin{align*}
+  \operatorname{Var}(y_i)
+  &= \mathbb{E}[y_i^2] - \bigl(\mathbb{E}[y_i]\bigr)^2 \\
+  &= \sum_{j=1}^n \Pr\!\bigl[h(j)=h(i)\bigr]\,x_j^2 - x_i^2 \\
+  &\overset{(1)}{=} \sum_{\substack{j=1\\ j\neq i}}^n \Pr\!\bigl[h(j)=h(i)\bigr]\,x_j^2 \\
+  &\overset{(2)}{=} \frac{1}{w}\sum_{\substack{j=1\\ j\neq i}}^n x_j^2 \\
+  &\overset{(3)}{=} \frac{1}{w}\bigl(\|x\|_2^2 - x_i^2\bigr)
+  \end{align*}
+  (1) because $x_i^2$ cancels out, (2) because of pair-wise independence, (3) by definition of $l_2$ norm.
+
+  \item
+  \begin{align*}
+  \Pr\!\bigl(\lvert x_i - y_i\rvert \ge \epsilon \|x\|_2\bigr)
+  &\overset{(1)}{\le} \frac{\operatorname{Var}(y_i)}{(\epsilon \|x\|_2)^2} \\
+  &\overset{(2)}{=} \frac{\tfrac{1}{w}\bigl(\|x\|_2^2 - x_i^2\bigr)}{\epsilon^2 \|x\|_2^2} \\
+  &= \frac{1}{w\epsilon^2} - \frac{x_i^2}{w\epsilon^2 \|x\|_2^2} \\
+  &\overset{(3)}{\le} \frac{1}{w\epsilon^2}
+  \end{align*}
+
+  (1) by Chebyshev's inequality, (2) by previous question, (3) because $x_i^2
+  \ge 0$ and $w\epsilon^2 \|x\|_2^2 > 0$.
+
+  Let $w = \frac{10}{\epsilon^2}$, then the error is bound by $1/10$.  \item For
+  each row, allocate an array $A$ of size $w = \frac{10}{\epsilon^2}$.
+  Duplicate this data structure with $m = 4 \log n$ copies all running on the
+  same input. To estimate the frequency of $i$, let $y_i$ be the median of
+  $g(i)A_j[h(i)]$ for $j \in [m]$.  The probability of large error $$\Pr[\vert
+  x_i - y_i\vert \geq \epsilon \|x\|_2] \overset{(1)}{\leq}
+  \bigl(\frac{1}{10}\bigr)^{m/2} \leq \bigl(\frac{1}{2^{m/2}}\bigr) =
+  \frac{1}{n^2} = O\bigl(\frac{1}{\text{poly}(n)}\bigr)$$ (1) because for the
+  median to have large error, at least half of the $m$ copies must also have
+  large error.
+
+\end{enumerate}
+
+\section*{HW2 Self-Grading}
+
+\textbf{Problems graded:} 5.1, 6.3, 6.4, 7.5, 8.6. 
+
+\textbf{Weighting:} each worth 10 points.
+
+\textbf{Special rule:} “IDK” receives 25\% credit.
+
+\subsection*{Score Summary}
+\begin{center}
+\begin{tabular}{@{} l r p{0.58\textwidth} @{}}
+\hline
+\textbf{Problem} & \textbf{Score} & \textbf{Rationale (short)} \\
+\hline
+5.1 & 2.5/10 & Marked IDK; per policy this earns 25\%. \\
+6.3 & 7/10   & Correct conditional expectation setup and derandomization idea; mixed \(1-1/e\) vs.\ \(3/4\) guarantees without a full proof and no runtime analysis. \\
+6.4 & 2.5/10 & Marked IDK; 25\% per policy. \\
+7.5 & 10/10  & Correct deterministic threshold (105\,s) with worst case \(15/8\); one-coin strategy analyzed with ratios \(< 15/8\). \\
+8.6 & 9/10   & Unbiased estimator, variance derived, Chebyshev to \(w=\Theta(1/\varepsilon^{2})\), median-of-means to small failure; minor notation/typos. \\
+\hline
+\multicolumn{1}{r}{\textbf{Total:}} & \textbf{31/50} & \textbf{62\%} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Per-Problem Comments}
+\begin{itemize}
+  \item \textbf{5.1 (2.5/10):} I wrote “IDK”; assigning 25\% credit per the stated rule.
+  \item \textbf{6.3 (7/10):} Set up the conditional expectation correctly (per-clause satisfaction under partial assignment and a choose-max step). However, I conflated the \(1-1/e\) and \(3/4\) guarantees and did not provide a complete approximation proof or explicit runtime. Credit kept for the correct method; deductions for incomplete analysis.
+  \item \textbf{6.4 (2.5/10):} “IDK”; awarding 25\%.
+  \item \textbf{7.5 (10/10):} Deterministic threshold \(105\) seconds gives worst case \(15/8\). Also presented a one-coin randomized variant with worst case strictly below \(15/8\), with clear case analysis and monotonicity check.
+  \item \textbf{8.6 (9/10):} Showed unbiasedness and computed variance; applied Chebyshev with \(w = 10/\varepsilon^{2}\) (any constant factor is fine), then \(m = O(\log n)\) repetitions with median to drive failure to \(1/\mathrm{poly}(n)\). Only small notation glitches.
+\end{itemize}
+
+\end{document}

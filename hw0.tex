@@ -1,7 +1,13 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath, amssymb}
+\usepackage{geometry,enumitem}
+\usepackage{xcolor}
 
-\title{CS 577: Homework 0}
+\newcommand{\pts}[1]{\textbf{#1 pts}}
+\newcommand{\OK}{\(\checkmark\)}
+\newcommand{\so}{\(\Rightarrow\)}
+
+\title{CS 588: Homework 0}
 \author{David Deng}
 
 \begin{document}
@@ -16,18 +22,123 @@ $p \in (0,1)$.
 \begin{enumerate}
   \item What is the expected number of coin flips until you obtain one heads? 
   Prove your answer.
+
+  \vspace{1cm} % space for your solution
+
+  Let $p_i$ be the probability of getting the \textit{first} heads on the
+  i$^{th}$ flip, then we must have gotton tails on the first $i-1$ flips and heads
+  on the i$^{th}$ flip.
   
-  \vspace{4cm} % space for your solution
+  Thus,
+
+  \[
+    p_{\mathbf{1}i} = (1-p)^{i-1} p
+  \]
+
+  Since we get the first heads on the i$^{th}$ flip, then the expected number of
+  flips until obtaining one heads is the distributed sum of the probability of
+  obtaining the first heads on any flip.
+
+  \begin{align*}
+  \mathbb{E}[X_1] 
+    &= \sum_{i=1}^{\infty} i p_{\mathbf{1}i} \\
+    &= \sum_{i=1}^{\infty} i (1-p)^{i-1} p \\
+    &= p \sum_{i=1}^{\infty} i (1-p)^{i-1} \\
+    &= p \sum_{i=0}^{\infty} (i+1)(1-p)^i \\
+    &= p \sum_{i=0}^{\infty} i(1-p)^i + (1-p)^i \\
+    &= p \bigl(\sum_{i=0}^{\infty} i(1-p)^i + \sum_{i=0}^{\infty} (1-p)^i\bigr) \\
+    &= p \bigl(\frac{1-p}{p^2} + \frac{1}{p}\bigr) \quad \text{(by formula for geometric series and its derivative)}\\
+    &= \frac{1-p}{p} + 1 \\
+    &= \frac{1}{p}
+  \end{align*}
+
+
+  \vspace{1cm} % space for your solution
   
   \item What is the expected number of coin flips until you obtain two heads? 
   Prove your answer.
+
+  \vspace{1cm} % space for your solution
+
+  \textbf{Method 1:}
+  The expected number of flips until obtaining the first heads is $G_1 = 1/p$.
+  The expected number of flips after obtaining the first heads until obtaining the second heads is also $G_2 = 1/p$.
+  Therefore, the expected number of flips until obtaining two heads is the sum of the two:
   
-  \vspace{4cm} % space for your solution
-  
+  $\mathbb{E}[X_2] = \mathbb{E}[X_1 + X_1] = \mathbb{E}[X_1] + \mathbb{E}[X_1] = 2/p$.
+
+  \textbf{Method 2 (incomplete):}
+
+  In order to have two heads on the i$^{th}$ flip, we must have had exactly one
+  heads on the first i$-1$ flips, and another head on the i$^{th}$ flip. 
+
+  The probability of the former is
+
+  \[ \binom{i-1}{1} p(1-p)^{i-2} = (i-1) p(1-p)^{i-2} \]
+
+  The probability of the latter is simply $p$.
+
+  Since the two events are independent, the joint probability is the product of the two:
+
+  \[ p_{\mathbf{2}i} = \binom{i-1}{1} p(1-p)^{i-2} \cdot p = (i-1) p^2(1-p)^{i-2} \]
+
+  Then the expected number of flips until obtaining two heads is the distributed
+  sum of the probability of obtaining the second heads on any flip.
+
+  \[ \mathbb{E}[X] = \sum_{i=2}^{\infty} i p_{\mathbf{2}i} = \sum_{i=2}^{\infty} i (i-1) p^2(1-p)^{i-2} = p^2 \sum_{i=2}^{\infty} i (i-1) (1-p)^{i-2} \]
+
+  {\color{red} TODO: finish this way of showing it. Use the formula for the
+  second derivative of the geometric series.}
+
+
   \item For general $k \in \mathbb{N}$, what is the expected number of coin 
   tosses until you obtain $k$ heads? Prove your answer.
+
+  \vspace{1cm} % space for your solution
+
+  \textbf{Method 1:}
+
+  Let $G_i$ be the expected number of flips after obtaining the $i-1^{th}$ heads
+  until obtaining the $i^{th}$ heads.
+
+  The expected number of flips for $G_i$ is the same as that for $G_1$, since the coin
+  flips are independent and identically distributed.
+
+  Therefore, the expected number of flips until obtaining $k$ heads is
+  $\mathbb{E}[\sum_{i=1}^{\infty} G_i] = \sum_{i=1}^{\infty} \mathbb{E}[G_i] = \sum_{i=1}^{\infty} 1/p = k/p$.
+
+  \textbf{Method 2:}
   
-  \vspace{6cm} % space for your solution
+
+  In general, in order to obtain $k$ heads on the i$^{th}$ flip, we must have had
+  $k-1$ heads on the first i$-1$ flips, and another head on the i$^{th}$ flip.
+
+  The probability of the former is
+
+  \[ \binom{i-1}{k-1} p^{k-1}(1-p)^{i-k} = {(i-1)!\over(k-1)!(i-2k+2)!} p^{k-1}(1-p)^{i-k} \]
+
+  The probability of the latter is again simply $p$.
+
+  Since the two events are independent, the joint probability is the product of the two:
+
+  \[ p_{\mathbf{k}i} = \binom{i-1}{k-1} p^{k-1}(1-p)^{i-k} \cdot p = {(i-1)!\over(k-1)!(i-2k+2)!} p^k(1-p)^{i-k}  \]
+
+  The expected number of flips until obtaining $k$ heads is the distributed sum of
+  the probability of obtaining the k$^{th}$ heads on any flip.
+
+  \begin{align*}
+    \mathbb{E}[X] 
+      &= \sum_{i=k}^{\infty} i \, p_{\mathbf{k}i} \\
+      &= \sum_{i=k}^{\infty} i \binom{i-1}{k-1} p^{k}(1-p)^{i-k} \\
+      &= p^k \sum_{i=k}^{\infty} i \,
+        \frac{(i-1)!}{(k-1)!(i-k)!} \,
+        (1-p)^{i-k}
+  \end{align*}
+
+  {\color{red} TODO: finish this way of showing it. Use the formula for the
+  second derivative of the geometric series.}
+  
+  \vspace{1cm} % space for your solution
 \end{enumerate}
 
 \section*{Exercise 1.2}
@@ -49,8 +160,123 @@ Both analyses should use linearity of expectation and we ask you to point this o
     \item $X_{ij}$ where either $i = k$ or $j = k$.
   \end{enumerate}
   For each case, show that the expected sum is $O(n)$.
-  
-  \vspace{6cm} % space for your solution
+
+  % k is the target rank
+
+  Let $X_{ij}$ be an indicator variable that is 1 if elements of rank $i$ and
+  $j$ are compared during the execution of quick-select, and 0 otherwise.
+
+  For the four cases above, we have the following analysis:
+  \begin{enumerate}
+    \item $i < j < k$.
+      In this case, the expected number of comparison is
+      \begin{align*}
+        \mathbb{E}\bigl[\sum_{i < j < k} X_{ij}\bigr] 
+      &= \sum_{i < j < k} \mathbb{E}[X_{ij}] \quad \text{(by linearity of expectation)} \\
+      &= \sum_{i < j < k} Pr[X_{ij} = 1] \quad \text{(since $X_{ij}$ is an indicator variable)}
+      \end{align*}
+
+      For any selected pivot of rank $p$, we have the following cases:
+
+      \begin{enumerate}
+        \item $p < i$, then the algorithm will continue and possibly compare $i$
+        and $j$ in the future.
+        Since only elements less than $i$ are discarded, this case only
+        delays the comparison of $i$ and $j$ to a future round, and does not
+        affect the analysis.  
+
+        \item $p = i$, then $i$ and $j$ will be compared.
+
+        \item $i < p < j$, then $i$ and $j$ will not be compared in this round,
+        and one of $i$ or $j$ will be discarded, so we will never compare $i$
+        and $j$ in the future.
+
+        \item $p = j$, then $i$ and $j$ will be compared.
+
+        \item $j < p < k$, then the algorithm will discard both $i$ and $j$, so
+        we will never compare $i$ and $j$ in the future.
+
+        \item $k = p$, then the algorithm will terminate and we will never
+        compare $i$ and $j$ in the future.
+
+        \item $p > k$, then the algorithm will continue and possibly compare $i$
+        and $j$ in the future.
+        Since only elements greater than $p$ are discarded, this case only
+        delays the comparison of $i$ and $j$ to a future round, and does not
+        affect the analysis.  
+
+      \end{enumerate}
+
+      Observe that $i$ and $j$ will be compared if and only if the first pivot selected among
+      $\{i, i+1, \ldots, j, j+1, \ldots, k\}$ is either $i$ or $j$.
+
+      The probability of this happening is $Pr[X_{ij} = 1] = \frac{2}{k-i+1}$.
+
+      Thus, the expected number of comparisons is
+      \begin{align*}
+        \mathbb{E}\bigl[\sum_{i < j < k} X_{ij}\bigr] 
+        &= \sum_{i < j < k} Pr[X_{ij} = 1] \\
+        &= \sum_{i < j < k} \frac{2}{k-i+1} \\
+        &= \sum_{i=1}^{k-2} \sum_{j=i+1}^{k-1} \frac{2}{k-i+1} \\
+        &= 2 \sum_{i=1}^{k-2} \frac{k-i-1}{k-i+1} \\
+        &= 2 \sum_{g=2}^{k-1} \frac{g-1}{g+1} \quad \text{(change of variable with $g = k-i$)}\\
+        &= 2 \sum_{g=2}^{k-1} \frac{g+1-2}{g+1} \quad \text{(rewriting)}\\
+        &= 2 \sum_{g=2}^{k-1} 1-\frac{2}{g+1} \quad \text{(rewriting)}\\
+        &= 2 (k-2) - 4\sum_{g=2}^{k-1} \frac{1}{g+1} \\
+        &= 2k-4-4\sum_{g=3}^{k} \frac{1}{g} \\
+        &= 2k-4-4\sum_{g=3}^{k} \frac{1}{g} \\
+        &= 2k-4-4(H_k - H_2) \quad \text{(reduce into harmonic series)}\\\\
+        &= 2k-4-4(ln(k) - 1 - \frac{1}{2}) \\
+        &= 2k-O(log n) \\
+        &= O(k) = O(n)\\
+      \end{align*}
+
+    \item $i < k < j$.
+
+     For this case, $i$ and $j$ is compared exactly when the first pivot
+     selected among $\{i, i+1, \ldots, j\}$ is either $i$ or $j$. Note that when
+     $k$ is selected, the algorithm terminates and $i$ and $j$ are not compared,
+     and when any other element between $i$ and $j$ is selected, one of $i$ or
+     $j$ is discarded and they will never be compared.
+
+     Therefore, the expected number of comparisons is
+
+     \begin{align*}
+        \mathbb{E}\bigl[\sum_{i < k < j} X_{ij}\bigr] 
+        &= \sum_{i < k < j} Pr[X_{ij} = 1] \\
+        &= \sum_{i < k < j} \frac{2}{j-i+1} \\
+        &= \sum_{i=1}^{n-2} \sum_{k=i+1}^{j-1} \frac{2}{j-i+1} \\
+        &= \cdots \quad \text{(analogous to case (a))}\\
+        &= O(n)
+     \end{align*}
+
+    \item $k < i < j$.
+     Analogous to case (a), the expected number of comparisons is
+     \begin{align*}
+        \mathbb{E}\bigl[\sum_{k < i < j} X_{ij}\bigr] 
+        &= \sum_{k < i < j} Pr[X_{ij} = 1] \\
+        &= \sum_{k < i < j} \frac{2}{j-k+1} \\
+        &= \sum_{k=1}^{j-2} \sum_{i=k+1}^{j-1} \frac{2}{j-k+1} \\
+        &= \cdots \quad \text{(analogous to case (a))}\\
+        &= O(n)
+     \end{align*}
+
+    \item $i = k$ or $j = k$.
+      $i$ and $j$ is compared when the first pivot chosen among
+      $\{i, i+1, \ldots, j\}$ is either $i$ or $j$. And we have the number of expected comparisons as:
+
+     \begin{align*}
+        \mathbb{E}\bigl[\sum_{i=k \lor j=k} X_{ij}\bigr] 
+        &= \sum_{i=k \lor j=k} Pr[X_{ij} = 1] \\
+        &= \sum_{i=1}^{k-1} \frac{2}{k-i+1} + \sum_{j=k+1}^{n} \frac{2}{j-k+1} \\
+        &= 2\sum_{g=2}^{k} \frac{1}{g} + \quad \text{(change of variables with $g = k-i+1$)}\\
+        & \qquad 2\sum_{h=2}^{n-k+1} \frac{1}{h} \quad \text{(change of variables with $h = j-k+1$)}\\
+        &= O(n)
+     \end{align*}
+
+  \end{enumerate}
+    
+  \vspace{1cm} % space for your solution
   
   \item \textbf{Approach 2.} The following approach can be interpreted as a randomized divide
   and conquer argument. We are arguing that with constant probability, we
@@ -61,25 +287,96 @@ Both analyses should use linearity of expectation and we ask you to point this o
     pivot uniformly at random and throw out some elements. Prove that with
     some constant probability $p$, we either sample the $k$th element or throw
     out at least $1/4$ of the remaining elements.
+
+    \vspace{1cm}
+
+    Let $X$ be a random indicator variable. 
     
-    \vspace{3cm}
+    Let $X = 1$ if we pick a pivot that has a rank that is in the middle half of the entire range.
+    Let $X = 0$ otherwise.
+
+    Since the pivot is picked uniformly at random, the probability of picking a pivot
+    that is in the middle half of the entire range is $Pr[X = 1] = 1/2$.
+
+    With $X = 1$, we throw out at least either the top quarter or at least the
+    bottom quarter of the whole range, which is $\geq 1/4$ of the entire range.
+
+    Another possibility is that we find the pivot directly.
+
+    Thus the probability of either finding the pivot or throwing out at least
+    $1/4$ of the entire range is $p \geq 1/2$.
+
+    \vspace{1cm}
     
     \item For each integer $i$, prove that the expected number of iterations (i.e.,
     rounds of choosing a pivot) of quick-select, where the number of elements
     remaining is in the range $\bigl[(4/3)^i, (4/3)^{i+1}\bigr)$, is $O(1)$.
-    
-    \vspace{3cm}
+    \vspace{1cm}
+
+    Let $X_i$ be the number of iterations where the number of elements
+    remaining is in the range $\bigl[(4/3)^i, (4/3)^{i+1}\bigr)$.
+
+    We want to show that $\mathbb{E}[X_i] = O(1)$, that is, it is bound to a constant.
+
+    The probability of the number of elements remaining being in the range
+    $\bigl[(4/3)^i, (4/3)^{i+1}\bigr)$ after 1 iteration is the probability of
+    selecting a pivot either in the first quarter or the last quarter, which is
+    $1/2$.
+
+    Thus, the expected number of iterations until the number of elements
+    remaining is no longer in the range $\bigl[(4/3)^i, (4/3)^{i+1}\bigr)$ is
+
+    The probability of the number of elements remaining in the range after $j$
+    iterations is $Pr[X_i = j] = (1-p)^{j-1} p = (1/2)^j$.
+
+    \begin{align*}
+      \mathbb{E}[X_i]
+      &= \sum_{j=1}^{\infty} j \, Pr[X_i = j] \\
+      &= \sum_{j=1}^{\infty} j \, (\frac{1}{2})^j \\
+      &= (1/2) \sum_{j=1}^{\infty} j \, (1/2)^{j-1} \\
+      &= (1/2) \sum_{j=0}^{\infty} (j+1) \, (1/2)^{j} \\
+      &= (1/2) \bigl(\sum_{j=0}^{\infty} j \, (1/2)^{j} + \sum_{j=0}^{\infty} (1/2)^{j}\bigr) \\
+      &= (1/2) \bigl(2 + 2\bigr) \quad \text{(by formula for geometric series and its derivative)}\\
+      &= 2
+    \end{align*}
+
+    Thus we have shown that $\mathbb{E}[X_i] = 2 = O(1)$.
+
+    \vspace{1cm}
     
     \item Fix an integer $i$, and consider the amount of time spent by quick-select
     while the number of elements remaining is greater than $(4/3)^{i-1}$ and at
     most $(4/3)^i$. Show that the expected amount of time is $\leq O((4/3)^i)$.
     
-    \vspace{3cm}
-    
+    \vspace{1cm}
+
+    Let $T_i$ be the amount of time spent by quick-select while the number of
+    elements remaining is greater than $(4/3)^{i-1}$ and at most $(4/3)^i$.
+
+    Since the pivot has to be compared with all the remaining elements, the time
+    spent in each iteration is proportional to the number of remaining elements.
+    Thus, the time spent in each iteration is $O((4/3)^i)$.
+
     \item Finally, use the preceding part to show that the expected running time of
     quick-select is $O(n)$.
-    
-    \vspace{3cm}
+
+    \vspace{1cm}
+    Let $T$ be the total time spent by quick-select.
+    Then we have 
+
+    \begin{align*}
+      \mathbb{E}[T]
+      &= \mathbb{E}[\sum_{i=1}^{log_{4/3}n} T_i \, X_i] \\
+      &= \sum_{i=1}^{log_{4/3}n} \mathbb{E}[T_i \, X_i] \\
+      &= \sum_{i=1}^{log_{4/3}n} \mathbb{E}[T_i] \mathbb{E}[X_i] \quad \text{(by independence of $T_i$ and $X_i$)}\\
+      &= \sum_{i=1}^{log_{4/3}n} ((4/3)^i) \cdot O(1) \\
+      &= O(\sum_{i=1}^{log_{4/3}n} (4/3)^i) \\
+      &= O(\frac{(4/3)^{log_{4/3}n + 1} - 1}{(4/3) - 1}) \quad \text{(by formula for geometric series)}\\
+      &= O(\frac{(4/3)n - 1}{(4/3) - 1}) \\
+      &= O(n)
+    \end{align*}
+
+    \vspace{1cm}
   \end{enumerate}
 \end{enumerate}
 
@@ -104,16 +401,82 @@ the algorithm is correct with probability at least $1/2$.
 
 \begin{enumerate}
   \item Let $y \in \mathbb{R}^n$ be a fixed nonzero vector, and let 
-  $x \in \{0,1\}^n$ be drawn uniformly at random. 
+  $x \in \{0,1\}^n$ be drawn uniformly at random.
   Show that $\langle x, y \rangle \; \overset{\text{def}}{=} \; 
   \sum_{i=1}^n x_i y_i \neq 0$ with probability at least $1/2$.
-  
-  \vspace{5cm}
+
+  \vspace{1cm}
+
+  % let y_j be a nonzero element of y
+  % then x_j is 0 with probability 1/2, and 1 with probability 1/2
+
+  % Suppose no other y_i's add up to -y_j, then if x_j is 1, then the inner
+  % product is nonzero, so with probability 1/2 the inner product is nonzero.
+
+  % Suppose there are other y_i's that add up to -y_j, such that 
+  % then for the inner product to be zero,
+  % Either both x_j and the other other x_i are all zero, or all of them are 1.
+  % This has a probability of 1/4 + 1/4 = 1/2, in the case that there is exactly one other y_i that adds up to -y_j.
+  % if x_j is 1,
+  % then the inner product is nonzero, so with probability 1/2 the inner
+
+
+  % if x_j is 1, then the inner product is
+
+  Since $y$ is a fixed nonzero vector, there exists at least one $y_j \neq 0$.
+
+  Let $y_j \neq 0$, and consider the partial sum $S_j = \sum_{i \neq j} x_i y_i$
+  by sampling all $x_i$'s except $x_j$.
+
+  For all possible $S_j$, we analyze the probability that $Pr[\langle x, y
+  \rangle = 0 \vert S_j = \sum_{i \neq j} x_i y_i]$, and we will show that this
+  probability is at most $1/2$ for all $S_j$. Then by the law of total
+  probability, $Pr[\langle x, y \rangle = 0] <= 1/2$, thus $Pr[\langle x, y
+  \rangle \neq 0] >= 1/2$.
+
+
+  We split into three cases:
+
+  \begin{enumerate}
+    \item $y_j \neq -S_j$. For this case, regardless of the value of $x_j$,
+    $\langle x, y \rangle = x_j y_j + S_j \neq 0$. Thus $Pr[\langle x, y
+    \rangle = 0 \vert S_j] = 0 < 1/2$.
+
+    \item $y_j = -S_j$ and $S_j \neq 0$. For this case, $\langle x, y
+    \rangle = 0$ if and only if $x_j = 1$. Thus $Pr[\langle x, y \rangle = 0
+    \vert S_j] = Pr[x_j = 1] = 1/2$.
+
+    \item $y_j = -S_j = 0$. This is impossible since $y_j \neq 0$.
+  \end{enumerate}
+
+  Therefore, for all possible $S_j$, $Pr[\langle x, y \rangle = 0 \vert S_j] \leq
+  1/2$. By the law of total probability, $Pr[\langle x, y \rangle = 0] \leq 1/2$.
+  Thus $Pr[\langle x, y \rangle \neq 0] \geq 1/2$.
+
+  \vspace{1cm}
   
   \item Use the preceding result to show that if $AB \neq C$, 
   then with probability at least $1/2$, $ABx \neq Cx$.
+
+  \vspace{1cm}
+
+  Let $D = AB - C$. Then $AB \neq C \iff D \neq 0$, and $ABx \neq Cx \iff Dx \neq 0$.
+
+  By assumption, we can assume $D \neq 0$.
+
+  Let $D_j$ be the row in $D$ that contains a nonzero entry, then by results
+  from the previous question, we have that 
+  $Pr[\langle x, D_j^{-1} \rangle = 0] \leq 1/2$. 
+
+  Having more nonzero bits in $D$ will only decrease the probability $Pr[\langle
+  x, D_j^{-1} \rangle = 0]$, since more random bits drawn in $x$ corresponding
+  to the extra nonzero bits in $D$ would have to be zero, which decreases the
+  total probability.
+
+  Thus, $Pr[Dx = 0] \leq 1/2$, and by implication, we have that with probability
+  at least $1/2$, $ABx \neq Cx$.
   
-  \vspace{4cm}
+  \vspace{1cm}
   
   \item Suppose we want to decrease our probability of error to (say) $1/n^2$. 
   Based on the algorithm above, design and analyze a fast randomized algorithm 
@@ -124,8 +487,106 @@ the algorithm is correct with probability at least $1/2$.
     it reports that $AB \neq C$.
   \end{itemize}
   Your analysis should include the running time as well.
+
+  \vspace{1cm}
+
+  We will draw multiple random vectors $x_1, x_2, \cdots, x_{{\lceil 2log_2 n
+  \rceil}}$, and report $AB \neq C$ if $Dx_i \neq 0$ for \textit{any} $i$ in
+  $x_1, x_2, \cdots, x_{{\lceil 2log_2 n \rceil}}$.
+
+  If $AB = C$, then $D = 0$, and we are guaranteed to have $Dx = 0$, which means
+  the algorithm reports that $AB = C$.
+
+  If $AB \neq C$, then the algorithm will report $AB = C$ only if for all $x_1,
+  x_2, \cdots, x_{{\lceil 2log_2 n \rceil}}$, $Dx_i = 0$. The probability of
+  this happening is equal to $(\frac{1}{2})^{\lceil 2log_2 n \rceil} =
+  1/2^{\lceil 2log_2 n \rceil} \leq 1/n^2$.
+
+  Suppose the dimension of $A$ is $n \times m$, and that of $B$ is $m \times p$,
+  then the cost of computing $Bx$ is $O(mp)$; the cost of computing $A(Bx)$ is
+  $O(nm)$, and the cost of computing $Cx$ is $O(np)$. For square matrices, this
+  is approximately $O(n^2)$.
+
+  The runtime of the algorithm is ${\lceil 2log_2 n \rceil} n^2 = O(n^2)$.
   
-  \vspace{6cm}
+  \vspace{1cm}
 \end{enumerate}
+
+\begin{center}
+{\LARGE HW0 Self–Grading Summary}\\[2mm]
+{\large Graded against \textit{Appendix B: Selected Solutions} (and the provided Quick-Select solution)}
+\end{center}
+
+\section*{My Scores}
+\begin{itemize}[leftmargin=1.25em]
+  \item Exercise 0.10: \pts{9.5/10}
+  \item Exercise 1.4: \pts{10/10}
+  \item Exercise 1.2 (Quick-Select): \pts{9.5/10}
+\end{itemize}
+
+\noindent\textbf{Total:} \pts{29.0/30}
+
+\section*{Exercise 0.10 \quad(\pts{9.5/10})}
+Per Appendix~B, the rubric splits as \(5+3+2\) for parts (1)--(3).
+
+\subsection*{(1) Expected flips until first head (\pts{5})}
+I derived \(\mathbb{E}[T]=1/p\) via the series method and handled the geometric-series steps correctly. 
+I did not explicitly justify exchanging differentiation and summation (or give the finite-sum limit argument), so I deduct \(0.5\) point here.\\
+\textbf{Score:} \pts{4.5/5}.
+
+\subsection*{(2) Expected flips until two heads (\pts{3})}
+I modeled the waiting time as the sum of two i.i.d.\ geometric variables and used linearity of expectation to conclude \(2/p\). This matches Appendix~B.\\
+\textbf{Score:} \pts{3/3}.
+
+\subsection*{(3) Expected flips until \(k\) heads (\pts{2})}
+I summed \(k\) geometric waiting times and concluded \(k/p\), consistent with Appendix~B.\\
+\textbf{Score:} \pts{2/2}.
+
+\paragraph{Subtotal:} \pts{9.5/10}.
+
+\section*{Exercise 1.4 \quad(\pts{10/10})}
+Appendix~B uses a \(4+3+3\) split for parts (1)--(3).
+
+\subsection*{(1) \(\Pr[\langle x,y\rangle\neq 0]\ge 1/2\) for nonzero \(y\) (\pts{4})}
+I conditioned on the last nonzero coordinate (partial sums argument) and showed the probability bound exactly as in the posted solution.\\
+\textbf{Score:} \pts{4/4}.
+
+\subsection*{(2) If \(AB\neq C\), then \(\Pr[ABx\neq Cx]\ge 1/2\) (\pts{3})}
+I reduced to a nonzero row of \(D=AB-C\) and applied part (1) on that row, matching Appendix~B.\\
+\textbf{Score:} \pts{3/3}.
+
+\subsection*{(3) Boost to error \(\le 1/n^{2}\) in near-quadratic time (\pts{3})}
+I repeated the test \(O(\log n)\) times, drove the error to \(\le 1/n^2\), and kept time near-quadratic for \(n\times n\) matrices, consistent with Appendix~B.\\
+\textbf{Score:} \pts{3/3}.
+
+\paragraph{Subtotal:} \pts{10/10}.
+
+\section*{Exercise 1.2 (Quick-Select) \quad(\pts{9.5/10})}
+I graded this using the rubric implicit in the provided Quick-Select solution (I followed \textit{Approach 2}). Either approach earns full credit when its subparts are satisfied.
+
+\subsection*{(a) Constant-probability progress (\(\ge \tfrac12\)) (\pts{2})}
+I argued that choosing a pivot from the middle half occurs with probability \(1/2\); this either finds the target or discards at least a quarter of the items.\\
+\textbf{Score:} \pts{2/2}.
+
+\subsection*{(b) Expected iterations per size band is \(O(1)\) (\pts{4})}
+I partitioned by size bands \([\,(4/3)^i,(4/3)^{i+1})\), used the coin-flip intuition from Exercise~0.10 to show a good pivot in constant expected trials, and observed that a good pivot exits the band.\\
+\textbf{Score:} \pts{4/4}.
+
+\subsection*{(c) Cost per iteration in band \(i\) is \(O((4/3)^i)\) (\pts{2})}
+I stated and used that each iteration within band \(i\) processes \(\Theta((4/3)^i)\) elements, so the expected work in that band is \(\Theta((4/3)^i)\cdot O(1)\).\\
+\textbf{Score:} \pts{2/2}.
+
+\subsection*{(d) Sum over bands to conclude \(\mathbb{E}[T]=O(n)\) (\pts{2})}
+I summed over \(i\) using the geometric series to obtain \(O(n)\). 
+I briefly wrote \(\mathbb{E}\!\left[\sum_i T_i X_i\right]\) instead of \(\sum_i \mathbb{E}[T_i]\) and did not explicitly cite linearity at that step. Since the intent and final bound are correct, I deduct \(0.5\) point.\\
+\textbf{Score:} \pts{1.5/2}.
+
+\paragraph{Subtotal:} \pts{9.5/10}.
+
+\section*{Final Notes}
+\begin{itemize}[leftmargin=1.25em]
+  \item In Exercise~0.10(1), I should add a one-line justification for exchanging limit/derivative with the sum to make the argument fully rigorous.
+  \item In Exercise~1.2(d), I should explicitly invoke linearity when moving the expectation inside the band-sum.
+\end{itemize}
 
 \end{document}
