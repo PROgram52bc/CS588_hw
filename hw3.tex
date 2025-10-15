@@ -9,10 +9,45 @@
 
 \section*{Exercise 9.3}
 
+Let $u$, $v$ be unit vectors such that $au = x$ and $bv = y$ for some $a,b \in \mathbb{R}^+$.
+To show 
+$$\vert\langle f(x), f(y) \rangle - \langle x,y\rangle \vert \leq \epsilon \|x\|\|y\|$$
+it suffices to show
+$$\vert\langle f(au), f(bv) \rangle - \langle au,bv\rangle \vert \leq \epsilon ab\|u\|\|v\|$$
+Since $f$ is linear, $f(au) = af(u)$ and $f(av) = af(v)$. By property of dot product, we also have $\langle ax, by\rangle = ab\langle x, y\rangle$.
+Thus, the above is also equivalent to
+$$\vert ab \langle f(u), f(v) \rangle - ab \langle u,v\rangle \vert \leq \epsilon ab\|u\|\|v\|$$
+Since $a,b > 0$, and unit vector $\|u\| = \|v\| = 1$, we have
+$$ab \vert \langle f(u), f(v) \rangle - \langle u,v\rangle \vert \leq \epsilon ab\|u\|\|v\| = \epsilon$$
+and thus showing
+$$\vert \langle f(u), f(v) \rangle - \langle u,v\rangle \vert \leq \epsilon$$
+is enough to solve this question.
 
+Recall for any vector $x$ and $y$, we have 
+$$\|x + y \|^2 = \sum_{i=1}^d (x_i + y_i)^2 = \sum_{i=1}^d x_i^2 + y_i^2 + 2x_iy_i = \|x\|^2 + \|y\|^2 + 2\langle x,y\rangle$$
+Similarly,
+$$\|x - y \|^2 = \sum_{i=1}^d (x_i - y_i)^2 = \sum_{i=1}^d x_i^2 + y_i^2 - 2x_iy_i = \|x\|^2 + \|y\|^2 - 2\langle x,y\rangle$$
+Subtracting the two equations, we have
+$$\|x + y \|^2 - \|x - y \|^2 = 4\langle x,y\rangle$$
+and thus
+$$\langle x,y\rangle = \frac{\|x + y \|^2 - \|x - y \|^2}{4}$$
+Using this property, we can simplify the LHS of the equation further:
+Let $U = \|f(u)+f(v)\|^2-\|f(u)-f(v)\|^2$, and $V = \|u+v\|^2 - \|u-v\|^2$, 
+and let $U' = \|f(u)+f(v)\|^2-\|u+v\|^2$, and $V' = \|f(u)-f(v)\|^2- \|u-v\|^2$, 
 
-
+We have $U-V = U'-V'$.
+\begin{align*}
+\vert \langle f(u), f(v) \rangle - \langle u,v\rangle \vert = & \vert\frac{U-V}{4}\vert\\
+=& \vert\frac{U'-V'}{4}\vert \\
+\leq & \frac{\vert U'\vert + \vert V'\vert}{4} \\
+\overset{(a)}{\leq}& \frac{\epsilon (\|u+v\|)^2 + \epsilon (\|u-v\|)^2}{4} \\
+=& \frac{2\epsilon (\|u\|^2 + \|v\|^2)}{4} \\
+=& \epsilon
+\end{align*}
+where (a) is by JL, where $\vert U' \vert= \vert \|f(u)+f(v)\|^2-\|u+v\|^2 \vert \leq \epsilon (\|u+v\|)^2$, and $\vert V' \vert= \vert \|f(u)-f(v)\|^2-\|u-v\|^2 \vert \leq \epsilon (\|u-v\|)^2$.
 
 \section*{Exercise 9.4}
+
+
 
 \end{document}
