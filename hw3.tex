@@ -48,6 +48,95 @@ where (a) is by JL, where $\vert U' \vert= \vert \|f(u)+f(v)\|^2-\|u+v\|^2 \vert
 
 \section*{Exercise 9.4}
 
+\begin{enumerate}
+\item We prove this by contradiction.
+First, suppose $N$ is not an $\epsilon$-net, then there is some point $s\in\mathbb{S}^k$, such that $\|s-x\| > \epsilon$ for all $x \in N$.
+Then we could insert $s$ into $N$, and $N \cup \{s\}$ would satisfy the invariant that the distance between any two points $> \epsilon$. However, since $N$ is declared to be a maximal set, no such point $s$ could exist. Therefore, $N$ must be an $\epsilon$-net.
 
+Second, suppose there are more than $(1 + \frac{2}{\epsilon})^k$ points in $N$. Let $V$ be the total volume of the packed spheres, and let $V'$ be the volume of the outer sphere of radius $1+\epsilon/2$. Then we have
+$$V' > V > (1+\frac{2}{\epsilon})^k \cdot c_k r^k = (1+\frac{2}{\epsilon})^k \cdot c_k (\epsilon/2)^k = c_k (\frac{2+\epsilon}{\epsilon}\cdot \frac{\epsilon}{2})^k = c_k(1+\frac{\epsilon}{2})^k = V'$$
+which is a contradiction.
+
+\item Let $x, y \in N$, by definition of subspace, $x,y \in \mathbb{R}^n$ . Since $P \sim \mathcal{N}^{l\times n}$ is a gaussian projection matrix, by JL, for any target dimension $l = O(\log n/\epsilon^2)$, we have
+$$\Pr[\|Px\|^2 - \|x\|^2 \ge \epsilon] \leq 2e^{-O(\epsilon^2\ell)}$$
+And by Exercise 9.3, we have that w.h.p.,
+$$\vert\langle f(x), f(y) \rangle - \langle x,y\rangle \vert \leq \epsilon \|x\|\|y\|$$
+With $\epsilon = 1/2$, we have 
+$$\Pr[\|Px\|^2 - \|x\|^2 \le 1/2] \leq 1 - 2e^{-O(\epsilon^2\ell)}$$
+ and w.h.p,
+ $$\vert\langle f(x), f(y) \rangle - \langle x,y\rangle \vert \leq 1/2 \|x\|\|y\|$$
+Let $\epsilon = 1/2$ and $\ell=O(k/\epsilon^2)$, we have 
+$$\Pr[\|Px\|^2 - \|x\|^2 \ge 1/2] \leq e^{-O(k/4)}$$
+By union bound, the probability that any of the $5^k$ points in $\mathbb{S}^k$ have error larger than $1/2$ is
+$$\Pr[\|Px\|^2 - \|x\|^2 \ge 1/2] \leq \sum_x e^{-O(k/4)} = 5^k e^{-O(k/4)} = e^{(\log 5)k - k/4}$$
+\item Choose $x_0$ to be the closest point in $N$ to $x$. $\|x-x_0\| \leq 1/2$ becuase $N$ is a $1/2$-net.
+Choose $\frac{x_1}{\|x-x_0\|}$ to be the closest point in $N$ to $\frac{x-x_0}{\|x-x_0\|}$ and let $\|x_1\| = \|x-x_0\| \leq 1/2$.
+We now have, by $1/2$-net, 
+$$\|\frac{x_1-(x-x_0)}{\|x-x_0\|}\| \leq 1/2$$
+Since $\|x-x_0\| \leq 1/2$, $\|x_1-(x-x_0)\| = \|x-x_0-x_1\| \leq 1/4$.
+
+In general, let $\|x_i\| = \|x - \sum_{j=0}^{i-1} x_j\|\leq 2^{-i}$, and pick its direction to be the point in $N$ that is closest to $\frac{x-\sum_{j=0}^{i-1} x_j}{\|x-\sum_{j=0}^{i-1} x_j\|}$, then we have both (a) and (b) by definition.
+
+\item Following step 1, build maximal set of points $N_1, N_2, N_3, \cdots$, where $N_i$ is an $2^{-i}$-net, and that $N \subseteq N_1 \subseteq N_2 \subseteq \cdots$ . By step 3, we can always express some unit vector $x$ in $\mathbb{S}^k$ as $x = x_0 + x_1 + x_2 + \cdots$, where $\| x_i \| \leq 2^{-i}$, thus we can union bound the projection error of some arbitrary $x \in \mathbb{S}^k$:
+
+TODO:
+$$\|Px\|^2 - \|x\|^2 = \cdots = \sum_i2^{-i} = 1 $$
+
+By $\epsilon$-net property, each $x_i$ has a point $y_i$ in its corresponding $N_i$ set such that $\|y_i-x_i\| \leq 2^{-i}$.
+
+Since $\mathbb{S}^k$ is a unit sphere in the k-dimensional space $U$, by scaling, this bound also holds for all vectors in $U$.
+\end{enumerate}
+
+\section*{Exercise 10.1}
+\begin{enumerate}
+    \item 
+$$\Pr[h(s) = h(t)] = 1 - \text{Hamming}(s,t)$$
+\item
+Let $k$ and $l$ be parameters to be determined.
+
+Build a $k$-ary hash function $h(s) = (h_1(s),\cdots,h_k(s))$, allocating $2^k$ buckets corresponding to the $k$-bit hash signature $h(s) \in \{0,1\}^k$ for each point.
+
+To query a point $s$, we compute $h(s)$, and if the corresponding bucket is non-empty, we iterate through the bucket and return the first valid point.
+
+By 1, we note that for any point $s_2 \in P(h(s))$, the probability of returning a "far" point is
+$$\Pr[h(s) = h(s_2) \ \vert\ \text{Hamming}(s,s_2) \geq 2r]  \leq (1-2r)^k$$
+The probability of not returning a "near" point is
+$$\Pr[h(s) \neq h(s_2) \ \vert\ \text{Hamming}(s,s_2) \leq r]  \leq 1 - (1-r)^k$$
+Duplicate this data structure $l$ times, and return a point if any of them returns a valid point.
+
+Then probability of getting "far" point becomes $l \cdot (1-2r)^k$
+The probability of returning "near" point becomes $1-(1-(1-r)^k)^l$
+
+let $k=\cdots$, and $l = \cdots$ 
+
+Preprocessing data takes $O(nkl)$ time.
+The expected number of bad points we get is $l \cdot(1-2r)^k$
+
+\item
+To use the data structure, we first hash all points into the buckets, and to query a point, we look into the corresponding bucket to see if any of the $l$ copies are non-emtpy. We iterate through the entries and return the first valid point.
+
+\section*{Exercise 11.4}
+We perform the same $L_1$-metric embedding as before, but instead of setting $\delta$ to 1/Poly(n), we set $\delta = 1/k^C$ for some constant $C$.
+
+This way, theroem 11.7 gives the deterministic upper bound $\|f(u)-f(v)\|_1 \leq O(\log(k))d(u,v)$ for some pair $(u,v)$.
+
+And we have
+$$\Pr[\|f(u)-f(v)\|_1 \leq c\cdot d(u,v)] \leq \delta = 1/k^C$$
+for some $0 < c < 1$.
+
+Taking a union bound over all $k$ input pairs, we have
+$$\Pr[\|f(u)-f(v)\|_1 \leq d(u,v)] \leq \delta = k/k^C = 1/poly(k)$$
+which is a high probability with some choice of $C$.
+\end{enumerate}
+
+\section*{Exercise 12.6}
+
+\begin{enumerate}
+\item Find the common ancestor, and replace each tree edge by the supporting shortest path in the graph $G$.
+\item For a solution in G from $s$ to $t$, we map to the tree by tracing up to the common ancestor and back. 
+The cost of the solution in $T$ can be a factor of $\log n$ more than the cost of solution in $G$, because at each level $i$, the expected contribution is constant, and there are at most $\log n$ such levels.
+\item Since we are building auxiliary edges for the tree, the solution in G will never have a cost more than the cost in T.
+\item The tree metric will never have less cost than the graph metric. And since the tree metric overapproximates by $\log n$, it has expected cost of $O(\log n)$ OPT.
+\end{enumerate}
 
 \end{document}
