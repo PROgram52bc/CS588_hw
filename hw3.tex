@@ -1,5 +1,6 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath, amssymb}
+\newcommand{\pts}[1]{\textbf{[#1 pts]}}
 
 \title{CS 588: Homework 3}
 \author{David Deng}
@@ -138,5 +139,70 @@ The cost of the solution in $T$ can be a factor of $\log n$ more than the cost o
 \item Since we are building auxiliary edges for the tree, the solution in G will never have a cost more than the cost in T.
 \item The tree metric will never have less cost than the graph metric. And since the tree metric overapproximates by $\log n$, it has expected cost of $O(\log n)$ OPT.
 \end{enumerate}
+
+\section*{CS588 HW3 \quad Self-Grade}
+
+\subsection*{Score Summary}
+\begin{itemize}
+  \item Exercise 9.3: \textbf{10 / 10}
+  \item Exercise 9.4: \textbf{8 / 10}
+  \item Exercise 10.1: \textbf{7 / 10}
+  \item Exercise 11.4: \textbf{4 / 10}
+  \item Exercise 12.6: \textbf{6 / 10}
+\end{itemize}
+\noindent \textbf{Total: 35 / 50}
+
+\bigskip
+\section*{Per-Problem Notes (Rubric Mapping)}
+
+\subsection*{Exercise 9.3 \quad \pts{10} \quad \emph{Score: 10}}
+\textbf{What I did right.}
+I reduced to unit vectors, used linearity of the JL map to scale back to general $x=au$, $y=bv$, and applied the polarization identity
+\[
+\langle f(u),f(v)\rangle-\langle u,v\rangle
+=\tfrac14\!\left(\|f(u){+}f(v)\|^2-\|u{+}v\|^2\right)
+-\tfrac14\!\left(\|f(u){-}f(v)\|^2-\|u{-}v\|^2\right),
+\]
+then bounded each squared-norm error by $\varepsilon$ to conclude the desired $O(\varepsilon)$ distortion for unit vectors and hence $\varepsilon\|x\|\|y\|$ in general. \emph{Full credit.}
+
+\subsection*{Exercise 9.4 \quad \pts{10} \quad \emph{Score: 8}}
+\textbf{What the rubric expects (high level).}
+(i) Build a maximal $\varepsilon$-net and bound its size; (ii) apply JL on the net with a union bound to set the target dimension $\ell=O(\varepsilon^{-2}\log|N|)$; (iii) write any unit vector as a geometric sum of scaled net points; (iv) telescope errors to all vectors.
+
+\textbf{Credit I'm taking.}
+I proved the $\varepsilon$-net maximality/packing argument (good), set up JL+$\,$union bound on the net (good, though my tail constants were a bit loose), and constructed the geometric decomposition $x=\sum_i x_i$ with $\|x_i\|\le 2^{-i}$ and nearest-net alignment.
+
+\textbf{Where I fell short.}
+I left the final telescoping/error-assembly step as a TODO and didn't cleanly pin the $\ell$ constant to beat the union bound with explicit confidence. \emph{partial: 8/10.}
+
+\subsection*{Exercise 10.1 \quad \pts{10} \quad \emph{Score: 7}}
+\textbf{What the rubric expects (high level).}
+Standard LSH amplification for Hamming: define $k$-bit signatures so near pairs collide w.p. $\ge (1-r)^k$ and far pairs with $\le (1-2r)^k$; replicate $L$ tables; choose $(k,L)$ so (i) recall is high and (ii) false positives per table are small; give build/query bounds.
+
+\textbf{Credit I'm taking.}
+I correctly wrote base collision probabilities, built the $k$-bit hash, replicated $L$ structures, derived: far-hit $\le L(1-2r)^k$ and miss-near $\le (1-(1-r)^k)^L$, and noted preprocessing/query effects.
+
+\textbf{Where I fell short.}
+I left $k$ and $L$ as “$\cdots$” and didn't finalize the asymptotically correct choices (e.g., $k=\Theta(\log n)$, $L=n^\rho$ for the right $\rho$), nor did I fully spell out the expected query time bound in terms of $n^\rho$. \emph{partial: 7/10.}
+
+\subsection*{Exercise 11.4 \quad \pts{10} \quad \emph{Score: 4}}
+\textbf{What the rubric expects (high level).}
+For $k$ terminal pairs, restrict the embedding/sampling to the $k$ terminals and prove an $O(\log k)$ distortion (e.g., via Fréchet/FRT-style coordinates calibrated to terminals), then apply it to the terminal-pairs objective.
+
+\textbf{Credit I'm taking.}
+I recognized switching to an $L_1$-type embedding and tuning failure probability to $1/\mathrm{poly}(k)$ to union-bound over $k$ pairs.
+
+\textbf{Where I fell short.}
+I mixed up the direction/constants of the distortion guarantee and didn't give the actual $O(\log k)$ terminal-restricted distortion argument; my probability inequalities were off and I didn't connect the embedding to the target sparsest-cut/terminal objective rigorously. \emph{Light partial: 4/10.}
+
+\subsection*{Exercise 12.6 \quad \pts{10} \quad \emph{Score: 6}}
+\textbf{What the rubric expects (high level).}
+Solve the buy-at-bulk (or related) on a random tree metric $T$ (FRT), use monotone/subadditive $f$, compare costs $G\!\leftrightarrow\!T$ using expected $O(\log n)$ stretch, map back by replacing tree edges with shortest paths and invoke subadditivity; conclude an $O(\log n)$-approximation in expectation.
+
+\textbf{Credit I'm taking.}
+I outlined the common-ancestor routing on $T$, stated the $O(\log n)$-level decomposition intuition, mentioned the $G\to T$ and $T\to G$ mappings and that subadditivity controls aggregate costs.
+
+\textbf{Where I fell short.}
+I didn't explicitly take expectation over the random tree, nor write the inequality chain that uses subadditivity to bound the back-mapped capacity/cost on $G$ and close the $O(\log n)$ factor. \emph{Solid partial: 6/10.}
 
 \end{document}
