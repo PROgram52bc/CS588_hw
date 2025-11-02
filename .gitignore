@@ -39,3 +39,5 @@
 # Generated directories
 _build/
 latex.out/
+
+.DS_store
