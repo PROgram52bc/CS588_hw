@@ -1,0 +1,243 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage[ruled,vlined,linesnumbered,noend]{algorithm2e}
+\usepackage{dsfont}
+
+\title{CS 588: Homework 4}
+\author{David Deng}
+
+\begin{document}
+\maketitle
+
+\SetKwFor{Repeat}{repeat}{}
+
+\section*{Question 13.2}
+
+Let $Q_1$ and $Q_2$ uniformly sample $k$ points each, with $k$ TBD.
+
+Recall the following definition:
+$$ A \overset{\text{def}}{=} \text{the event that } Q_1 \cap r = \emptyset \text{ and } \mu(r) \ge \epsilon \text{ for some } r \in R$$
+$$ B \overset{\text{def}}{=} \text{the event that } Q_1 \cap r = \emptyset \text{ and } \mu_2(r) > \epsilon/2 \text{ for some } r \in R$$
+
+
+Define $C$ as the event that 
+$$Q_1 \cap r = \emptyset \text{ and } \mu(r) \ge \epsilon \text{ and } \mu_2(r) > \epsilon/2 \text{ for some } r \in R$$
+
+We want to show $\Pr[A] \le \delta$ for some $\delta$ TBD.  Observe that it suffices to show
+\begin{enumerate}
+    \item $\Pr[B] \ge \frac{\Pr[A]}{2}$ and
+    \item $\Pr[B] \le \frac{\delta}{2}$
+\end{enumerate}
+
+To show (1), we observe that similar to in the $\epsilon$-sample theorem, we
+have $\Pr[B] \ge \Pr[C] = \Pr[C,A] = \Pr[C\vert A]\Pr[A]$, where it suffices to
+show $\Pr[C\vert A] \ge 1/2$.
+Since we have by event $A$ that $\mu(r) \ge \epsilon$, and since sample $Q_2$ is
+the average sum of independent Bernoulli variables $\frac{1}{k}\sum_{i}^{k}X_i$ where $$X_i
+= \mathds{1}[\text{the }i^{th} \text{ sample is in } r]$$ 
+We can apply additive Chernoff bound: $\Pr[\mu_2(r) < \epsilon/2] \le e^{-\epsilon^2k} \le 1/2$ for $k > \log 2/\epsilon^2$.
+Since $Q_1$ and $Q_2$ are independent samples, $Q_1 \cap r = \emptyset$ is irrelevant in the analysis of $Q_2$, therefore
+$\Pr[C\vert A] = \Pr[C\vert \mu(r) \ge \epsilon] \ge 1/2$.
+
+To show (2), we imagine sampling $Q_0$ with $2k$ points, and randomly split them
+into two sets $Q_1$ and $Q_2$, of size $k$ each. Observe that $P[B] =
+\sum_{Q_0} P[B\vert Q_0]P[Q_0] \le \max_{Q_0}P[B\vert Q_0]$, we fix some $Q_0$,
+and it suffices to show that for some arbitrary $Q_0$, we have $P[B] \le
+\frac{\delta}{2}$.
+
+Since we have $\mu_2(r) > \epsilon/2$, we have $\mu_0(r) > \epsilon/4$.
+There are at least $2k\epsilon/4 = k\epsilon/2$ points in $r$.
+
+Let $X_i$ be the event that some random sample from $Q_0$ is in $r$, then
+$\Pr[X_i] > \epsilon/4$, and $\Pr[\sum_{i}^{k} \mathds{1}[\text{the } i^{th}
+\text{ sample is in }Q_0] = 0] < (1-\epsilon/4)^k < e^{-k\epsilon/4}$.
+
+
+Union bound with up to $g(2k)$ unique ranges, we have
+$$\Pr[B] \le g(2k)e^{-k\epsilon/4}$$
+
+Choose $k > 8\log(g(2k)/\delta)/\epsilon$, we have $\Pr[B] \le \delta/2$.
+
+
+% Thus, choose $k > \cdots$,
+
+% we have $\Pr[\vert \mu_1(r) - \mu_0(r)\vert + \vert \mu_2(r) - \mu_0(r)\vert >
+% \epsilon/2] \le \delta/2$.
+
+% Idea: We only care about the ``heavy'' ranges, by the $\epsilon$-net theorem statement, where $\mu(r) \ge \epsilon$.
+
+% So in analyzing $\Pr[B]$, we know that it only occurs if $\mu_2(r) \ge \epsilon/2$, which means $\mu_0(r) \ge \epsilon/4$.
+
+% Let $D \overset{\text{def}}{=}\vert \mu_1(r) - \mu_2(r)\vert > \epsilon/2$.
+% We observe $B$ implies $D$, thus $\Pr[B] \le \Pr[D]$. 
+% By triangle inequality, we have $\vert \mu_1(r) - \mu_2(r)\vert \le \vert \mu_1(r) - \mu_0(r)\vert + \vert \mu_2(r) - \mu_0(r)\vert$.
+% Therefore $$\Pr[B] \le \Pr[D] \le \Pr[\vert \mu_1(r) - \mu_0(r)\vert + \vert \mu_2(r) - \mu_0(r)\vert > \epsilon/2]$$
+% and it suffices to show $\Pr[\vert \mu_1(r) - \mu_0(r)\vert + \vert \mu_2(r) - \mu_0(r)\vert > \epsilon/2] \le \delta/2$.
+
+
+% For a particular range $r$, by additive Chernoff bound, we have 
+% $$\Pr[\vert \mu_1(r) - \mu_0(r) \vert\ge \epsilon/4] \le e^{-k\epsilon^2/8}$$
+% and
+% $$\Pr[\vert \mu_2(r) - \mu_0(r) \vert\ge \epsilon/4] \le e^{-k\epsilon^2/8}$$
+
+% Observe for the restricted space $Q_0$, there are at most $g(2k)$ distinct
+% ranges.  So by union bound, for \textit{all} ranges $r$, we have
+% $$\Pr[\vert \mu_1(r) - \mu_0(r) \vert\ge \epsilon/4] \le g(2k)e^{-k\epsilon^2/8}$$
+% and
+% $$\Pr[\vert \mu_2(r) - \mu_0(r) \vert\ge \epsilon/4] \le g(2k)e^{-k\epsilon^2/8}$$
+
+\newpage
+
+\section*{Question 13.3}
+
+We use the following algorithm to find an $O(\log k)$-approximation for the minimum cardinality hitting set:
+
+\newcommand{\marg}[2]{f(#1 \mid #2)}
+
+\begin{algorithm}[H]
+\caption{\textsc{Randomized-Greedy}\((f,k)\)}\label{alg:randomized-greedy}
+\DontPrintSemicolon
+\KwIn{ground set \(N\), integer \(k\); objective \(f:2^{N}\!\to\!\mathbb{R}_{\ge 0}\)}
+\KwOut{set \(S \subseteq N\) with \(|S|=k\)}
+\(S \gets \varnothing\)\;
+\For(\tcp*[f]{iterate \(k\) rounds}){\(i \gets 1\) \KwTo \(k\)}{
+  % ---- Choose a random candidate pool R_i (pick ONE rule and delete the other) ----
+  % (A) Sample a fixed-size subset:
+  % \(R_i \subseteq N \setminus S\) chosen uniformly at random with \(|R_i| = r\)\;
+  % (B) Include each element independently with prob. p:
+  % \(R_i \gets \{ e \in N \setminus S : \text{include } e \text{ independently w.p. } p \}\)\;
+  % ------------------------------------------------------------------------------
+  \(e_i \gets \arg\max_{e \in R_i} \marg{e}{S}\)\;
+  \(S \gets S \cup \{e_i\}\)\;
+}
+\Return \(S\)\;
+\end{algorithm}
+
+\newpage
+
+\section*{Question 14.1}
+
+Given a weak PAC learner routine $f$, we propose the following algorithm that
+produces a good hypothesis (with error rate $< \epsilon$) with probability at least
+$1-\delta$:
+
+\begin{algorithm}[H]
+\caption{\textsc{PAC-learner-from-weak-learner}\((f,D)\)}\label{alg:pac-learner}
+\DontPrintSemicolon
+\KwIn{The weak PAC learner $f$, training dataset $D$}
+\KwOut{A PAC learner}
+% $D_1 \gets$ sample $m$ points from $D$\;
+\For{1 \KwTo k}{
+    $D_1,D_2 \gets$ sample two sets of points, each of size $m$\;
+    $h \gets $ learn a hypothesis with $f$ with target error rate $\epsilon-t$ on $D_1$\;
+    test $h$ on $D_2$\;
+    \If{$err_{D_2}(h) \le \epsilon-t/2$}{
+        \Return h\;
+    }
+}
+\Return error\;
+\end{algorithm}
+
+We show that the above algorithm returns a hypothesis $h$ such that
+$\text{err}(h) < \epsilon$ with probability at least $1 - \delta$.
+
+$A \triangleq err(h) < \epsilon - t$ and $B \triangleq err(h) \ge \epsilon - t$.
+By definition of a weak PAC learner, in each round, we have $\Pr[A] \ge 1/2$ and
+$\Pr[B] < 1/2$.
+
+Observe that our algorithm successfully returns some good hypothesis, as long as
+\begin{enumerate}
+    \item it does not accept some bad $h$, and 
+    \item it does not reject $h$ in \textit{all} $k$ rounds.
+\end{enumerate}
+
+
+\paragraph{We now analyze the first failure event.}
+For a fixed round, we have
+$$\Pr[\text{accept }h\ \vert\ h \text{ is bad}] = \Pr[err_{D_2}(h) < \epsilon - t/2
+\ \vert\ err(h) > \epsilon] \overset{(1)}{<} e^{-t^2m/2} = q$$ where (1) is by
+additive Chernoff bound, where $err_{D_2}(h)(h)$ is a sum of independent random
+variables and $err(h)$ is the average. We also write $q = e^{-t^2m/2}$.
+
+$\Pr[err(h) > \epsilon] < \Pr[B] < 1/2$ by definition of
+weak PAC learner, for any round $$\Pr[\text{accepting }h \land h\text{ is bad}]
+\le q/2$$ By union bound, The probability of accepting \textit{any} bad
+hypothesis across $k$ rounds is $$\Pr[\text{accepting some bad hypothesis}] \le
+kq/2$$
+
+\paragraph{We now analyze the second failure event.}
+For a fixed round, 
+$$\Pr[\text{reject }h\ \vert\ h \text{ is good}] = \Pr[err_{D_2}(h) > \epsilon -
+t/2 \ \vert\ err(h) < \epsilon-t] \overset{(1)}{<} e^{-t^2m/2} = q$$ where (1)
+is by additive
+Chernoff bound.
+
+Conversely,
+$$\Pr[\text{accept }h\ \vert\ h \text{ is good}] = \Pr[err_{D_2}(h) > \epsilon -
+t/2 \ \vert\ err(h) < \epsilon-t] \ge 1- q$$
+and with $\Pr[A] > 1/2$, we have that for any round,
+$$\Pr[\text{accept a good hypothesis}] = \frac{1-q}{2}$$
+For $k$ rounds, the chance that none of the rounds yield a 
+$$\Pr[\text{reject in all }k \text{ rounds}] = (1 - \frac{1-q}{2})^k \le e^{-(1-q)k/2}$$
+
+Select $m \ge \frac{2\log(k/\delta)}{t^2}$ will give us $q < k\delta$, and the
+probability of the first failure event is bounded by $\delta/2$.  Let $k \ge
+4\log(2/\delta)$ (assuming conservatively $q \le 1/2$), then the probability of
+the second failure event is also bounded by $\delta/2$.  A union bound gives us
+the total failure probability of less than $\delta$.
+
+We note that when $\epsilon-t \le err(h) \le \epsilon$, the algorithm can either
+accept or reject. This is safe because if it accepts, $h$ is a ``good''
+hypothesis since $err(h) < \epsilon$, and if it rejects, the analysis of the
+second failure event above demonstrates that such an event is unlikely.
+
+\newpage
+\section*{Question 15.3}
+
+\begin{enumerate}
+
+    \item Instead of computing $f$ overall $n$ points, we do it on
+    $n\log(1/\epsilon)/k$ elements for each round. So the expected running time
+    is $O(n\log(1/\epsilon)/k \cdot kQ) = O(n\log(1/\epsilon)Q)$.
+
+    \item Let $R_i$ be the sample of size $n\log(1/\epsilon)/k$ at round $i$, and let $A_i \subseteq S_{i-1}$ be the top $k$ elements in $S_{i-1}$.
+    We analyze the probability that none of the sampled points are the top $k$ elements in $S_{i-1}$, that is,
+
+    $$\Pr[A_i \cap R_i = \emptyset] = (1 - \frac{k}{n})^{n\log(1/\epsilon)/k} \le \epsilon^{\frac{k}{n}\cdot n/k} = \epsilon$$
+
+    Suppose $A_i \cap R_i \neq \emptyset$, then the analysis is the same as the randomized greedy algorithm for a single round. Specifically,
+
+    \begin{align*}
+       &\mathbb{E}[\max_{e \in R_i} f(e\vert S_{i-1}) \vert A_i \cap R_i \neq \emptyset] \\
+    \overset{(1)}{\ge}\ &\underset{e \in A_i}{\mathbb{E}}[f(e\vert S_{i-1}) \vert A_i \cap R_i \neq \emptyset] \\
+    \overset{(2)}{\ge}\ &\underset{e \in S^*}{\mathbb{E}}[f(e\vert S_{i-1}) \vert A_i \cap R_i \neq \emptyset] \\
+    \overset{(3)}{\ge}\ &(1-\epsilon) \frac{1}{k} f(S^*\vert S_{i-1}) \\
+    \overset{(4)}{\ge}\ & \frac{1-\epsilon}{k} (f(S^*) - f(S_{i-1})) \\
+    =\ & \frac{1-\epsilon}{k} (OPT - f(S_{i-1})) 
+    \end{align*}
+
+    (1) is because $R_i$ contains at least one element from $A_i$, and it must have be chosen as the maximum.
+    (2) is because of randomized greedy choice of $e$, specifically, sampling one from the top $k$ elements is ``better'' than sampling from the overall optimum set $S^*$ (greedy choice of $e$).
+    (3) is because of submodularity.
+    (4) is because of monotonicity, that $f(S^*) \le f(S^* \cup S_{i-1})$.
+
+    \item Let $q = \frac{1-\epsilon}{k}$, then by the recurrence from the previous question, we have
+    \begin{align*}
+        \mathbb{E}[f(S_1)] &= q\cdot OPT \\
+        \mathbb{E}[f(S_2)] &= q\cdot (OPT - q\cdot OPT) = (q-q^2)\cdot OPT \\
+        \mathbb{E}[f(S_3)] &= q\cdot (OPT - (q-q^2)\cdot OPT) = (q-q^2+q^3)\cdot OPT \\
+        \cdots
+        \mathbb{E}[f(S_i)] &= OPT \sum_{j=1}^i (-1)^{j+1}q^j \\
+        &= OPT\cdot q \sum_{j=0}^{i-1} (-q)^j \\
+        &= OPT\cdot q \frac{1-(-q)^i}{1+q}
+    \end{align*}
+    
+
+\end{enumerate}
+
+\newpage
+\section*{Question 16.1}
+
+Idea: Use the class tool as black box, and set the threshold to $\delta/2$ instead of $\delta$.
+
+\end{document}
