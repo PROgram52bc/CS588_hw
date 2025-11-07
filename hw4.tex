@@ -9,8 +9,6 @@
 \begin{document}
 \maketitle
 
-\SetKwFor{Repeat}{repeat}{}
-
 \section*{Question 13.2}
 
 Let $Q_1$ and $Q_2$ uniformly sample $k$ points each, with $k$ TBD.
@@ -297,6 +295,36 @@ second failure event above demonstrates that such an event is unlikely.
 \newpage
 \section*{Question 16.1}
 
-Idea: Use the class tool as black box, and set the threshold to $\delta/2$ instead of $\delta$.
+We prove the theorem by constructing an encoding scheme.
+
+According to Shannon's upper bound theorem, for some $\epsilon = \delta^2$,
+there is a coding scheme with average error $\le \delta^2$ and transmission rate
+$R \ge 1-H(p)-\delta^2$.
+
+Let $\mathcal{C} \in \{0,1\}^m \to \{0,1\}^n$ and $\mathcal{D}\in \{0,1\}^n \to
+\{0,1\}^m$ be that coding scheme, and for any string $x \in \{0,1\}^m$, let
+$P_x$ denote the event that $x$ will have a transmission error with respect to
+this coding scheme. By the theorem, for some string $x$, $\Pr[P_x] \le
+\delta^2$, and with $M=2^m$ such strings, the expected error rate is $E =
+\frac{1}{M}\underset{x}{\mathbb{E}}[P_x] \le \delta^2$.
+
+By Markov's inequality, $Pr[E > \delta] < \delta$.
+
+This means there are less than $M\delta = 2^m\delta$ strings that have error
+w.r.t this coding scheme.
+
+Now we remove those strings, and consider a new encoding space with $m' = \log_2
+((1-\delta)2^m)$ and $n' = n$.
+
+We have a new transmission rate
+
+$$R' = \frac{m'}{n'} = \frac{\log_2 (1-\delta) + m}{n} = \frac{m}{n} +
+\frac{\log_2 (1-\delta)}{n} \ge 1-H(p)-\delta^2- \frac{\log_2 (1-\delta)}{n}$$
+
+For sufficiently large $n$, this is equal to $1-H(p)-\delta^2 \ge 1-H(p)-\delta$
+
+Thus, we have obtained a coding scheme where all strings have an encoding error
+$< \delta$ with the same transmission rate.
+
 
 \end{document}
