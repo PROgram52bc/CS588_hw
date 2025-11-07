@@ -23,7 +23,7 @@ $$ B \overset{\text{def}}{=} \text{the event that } Q_1 \cap r = \emptyset \text
 Define $C$ as the event that 
 $$Q_1 \cap r = \emptyset \text{ and } \mu(r) \ge \epsilon \text{ and } \mu_2(r) > \epsilon/2 \text{ for some } r \in R$$
 
-We want to show $\Pr[A] \le \delta$ for some $\delta$ TBD.  Observe that it suffices to show
+We want to show $\Pr[A] \le \delta$.  Observe that it suffices to show
 \begin{enumerate}
     \item $\Pr[B] \ge \frac{\Pr[A]}{2}$ and
     \item $\Pr[B] \le \frac{\delta}{2}$
@@ -95,23 +95,82 @@ We use the following algorithm to find an $O(\log k)$-approximation for the mini
 \newcommand{\marg}[2]{f(#1 \mid #2)}
 
 \begin{algorithm}[H]
-\caption{\textsc{Randomized-Greedy}\((f,k)\)}\label{alg:randomized-greedy}
+\caption{\textsc{Randomized-Min-Hitting-Set}\(k,D,P\)}
 \DontPrintSemicolon
-\KwIn{ground set \(N\), integer \(k\); objective \(f:2^{N}\!\to\!\mathbb{R}_{\ge 0}\)}
-\KwOut{set \(S \subseteq N\) with \(|S|=k\)}
-\(S \gets \varnothing\)\;
-\For(\tcp*[f]{iterate \(k\) rounds}){\(i \gets 1\) \KwTo \(k\)}{
-  % ---- Choose a random candidate pool R_i (pick ONE rule and delete the other) ----
-  % (A) Sample a fixed-size subset:
-  % \(R_i \subseteq N \setminus S\) chosen uniformly at random with \(|R_i| = r\)\;
-  % (B) Include each element independently with prob. p:
-  % \(R_i \gets \{ e \in N \setminus S : \text{include } e \text{ independently w.p. } p \}\)\;
-  % ------------------------------------------------------------------------------
-  \(e_i \gets \arg\max_{e \in R_i} \marg{e}{S}\)\;
-  \(S \gets S \cup \{e_i\}\)\;
+\KwIn{$k \in \mathbb{N}$: an input parameter, 
+$D=\{d_1,\cdots,d_m\subseteq \mathbb{R}^2\}$: the set of disks, 
+$P=\{p_1,\cdots,p_n\in\mathbb{R}^2\}$: the set of points}
+\KwOut{set \(Q \subseteq P\) which hits all disks in $D$}
+Let $w$ be a vector in $\mathbb{R}^n$\;
+$w \gets [1,\cdots,1]$\;
+\For{1 \KwTo t}{
+    sample $k\log k$ points $Q \subseteq P$ with distribution $w$\;
+    \If{$Q$ hits all $D_i \in D$}{
+        \Return $Q$\;
+    }
+    pick a $D_i$ not hit by $Q$\;
+    \For{each point $p_j \in D$}{
+        $w(j) \gets 2w(j)$\; 
+    }
 }
-\Return \(S\)\;
+\Return fail\;
 \end{algorithm}
+
+Let OPT be the size of the minimum hitting set for $D$ in $P$, 
+
+We first show
+that for appropriate $k \approx OPT$, the algorithm always returns a hitting set
+for some appropriate $t$, and we get a $\log k$-approximate hitting set.
+
+We can perform a binary search by running at most $\log k$ iterations of the
+algorithm to obtain the appropriate measure of $k$.
+
+Thus, we only need to show that with an appropriate measure $k \approx OPT$, the
+algorithm terminates with a hitting set.
+
+Let $q = OPT$, and let $Q^*$ be the minimum hitting set such that $\vert
+Q^*\vert = q$. Let $\Phi_T = \prod_{p\in Q^*} w_T(p)$ be a measure of
+``potential'' on the set $Q^*$ after the $T^{th}$ round of the algorithm for
+some $T<t$, where $w_T(p)$ is the weight on $p$ at round $T$.
+
+We have $\Phi_0 = 1$.
+
+By definition, $Q^*$ is a hitting set of $D$, so in every iteration of the
+algorithm, at least one point in $Q^*$ must have its weight doubled.
+
+Thus we can have a lower bound that $\Phi_T \ge 2^T\Phi_0 = 2^T$.
+
+Since $\Phi_T$ is a product, we can use AM-GM to upper bound it:
+
+$$\Phi_T = \prod_{p\in Q^*} w_T(p) < (\frac{\sum_{p\in Q^*} w_T(p)}{q})^q < (\frac{\sum_{p\in P} w_T(p)}{q})^q \overset{(1)}{\le} (\frac{W_0(1+C/k)^T}{q})^q$$
+
+for some $C$, where $W_T = \sum_{p \in P} w_T(p)$.
+
+(1) is because $\mu(D_i) < 1/k$ for any missed disk $D_i$. We observe that since
+disks have a VC-dimension of 3, $g(n) = n^3$, and by $\epsilon$-net theorem, a
+sample $Q$ of size $k\log k$ is a $1/k$-net with high probability. Therefore,
+any missed disk from the sample must have fewer than $n/k$ points w.h.p.
+
+Now solving the inequality $2^T \le (\frac{W_0(1+C/k)^T}{q})^q$, we have
+
+$$T \le \frac{q(\log W_0 - \log q)}{\log 2 - q\log(1 + C/k)} < \frac{q(\log W_0 - \log q)}{\log 2 - q(1 + C/k)}$$
+
+Setting $k$ to $q$ (due to OPT), and observe that $W_0 = n$, we have 
+$$T \le \frac{q(\log (n/q))}{\log 2 - C} \le q(\log(n/q))$$
+
+if we choose some $C < (\log2)/2$.
+
+We now show that we cannot keep increasing the potential for more than
+$O(q(log(n/q)))$ rounds, which means the algorithm will return a solution after
+at most $O(q(log(n/q)))$ rounds. This completes the proof that the algorithm
+terminates with a hitting set with an appropriate measure $k \approx OPT$.
+
+
+% is because each missed disk tends to be a light disk with less than
+% $n\epsilon$ points, so the $\sum{p\in Q^*} w_T(p) \approx W_0(1+C\epsilon)^T$
+
+
+
 
 \newpage
 
