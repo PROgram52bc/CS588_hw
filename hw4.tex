@@ -85,6 +85,96 @@ $$\Pr[B] \le g(2k)e^{-k\epsilon/4}$$
 Choose $k > 8\log(g(2k)/\delta)/\epsilon$, we have $\Pr[B] \le \delta/2$.
 
 
+\medskip
+\textbf{Self Grade} I would give myself about $8.5/10$.
+
+% \medskip
+% \textbf{What is correct and matches the sample solution:}
+% \begin{itemize}
+%   \item I correctly defined the events $A$, $B$, and $C$, and set up the goal to show
+%     \[
+%       \Pr[B] \;\ge\; \tfrac{1}{2}\Pr[A]
+%       \quad\text{and}\quad
+%       \Pr[B] \;\le\; \tfrac{\delta}{2},
+%     \]
+%     which implies $\Pr[A] \le \delta$. This matches the structure in B.6.
+%   \item I used the relation
+%     \[
+%       \Pr[B] \;\ge\; \Pr[C] \;=\; \Pr[C \mid A]\Pr[A],
+%     \]
+%     so it suffices to lower bound $\Pr[C \mid A]$. This is exactly the same idea as in the book.
+%   \item Conditional on $A$, I fixed a range $r$ with $\mu(r)\ge \epsilon$ and treated
+%     \[
+%       \mu_2(r) = \frac{1}{k}\sum_{i=1}^k X_i
+%     \]
+%     as the average of i.i.d.\ Bernoulli variables, then used Chernoff to show that with high probability
+%     $\mu_2(r) \ge \epsilon/2$. I also correctly used the independence of $Q_1$ and $Q_2$ to argue that
+%     the event $Q_1 \cap r = \emptyset$ does not affect the distribution of $\mu_2(r)$.
+%   \item I followed the double-sampling argument: introduce $Q_0$ of size $2k$, split it randomly into
+%     $Q_1$ and $Q_2$ of size $k$, then condition on $Q_0$ and use a union bound over at most $g(2k)$
+%     ranges induced on $Q_0$. This matches the sample solution at a high level.
+% \end{itemize}
+
+% \medskip
+% \textbf{Where points are deducted:}
+
+% \paragraph{(1) Chernoff bound and dependence on $\epsilon$ (about $-0.5$ point).}
+% \begin{itemize}
+%   \item The book applies a \emph{multiplicative} Chernoff bound to the sum
+%     $X = \sum_{i=1}^k X_i$ with expectation $\mathbb{E}[X] \ge \epsilon k$, and obtains
+%     a bound of the form
+%     \[
+%       \Pr\big[\mu_2(r) \le \epsilon/2\big]
+%       = \Pr\big[X \le (\epsilon/2)k\big]
+%       \;\le\;
+%       \exp\big(-\Omega(\epsilon k)\big).
+%     \]
+%     This leads to a requirement $k = \Omega(1/\epsilon)$.
+%   \item In my solution, I effectively used an \emph{additive} Chernoff bound and wrote something like
+%     \[
+%       \Pr[\mu_2(r) < \epsilon/2] \;\le\; e^{-\epsilon^2 k},
+%     \]
+%     which forces $k \gtrsim 1/\epsilon^2$ just to make this probability small (for example, $\le 1/2$).
+%   \item This still makes the argument valid (a larger $k$ is fine), but it is \emph{weaker} than the book
+%     and no longer matches the target sample complexity $k = \Theta\!\big(\log(g(2k)/\delta)/\epsilon\big)$
+%     from Theorem 13.4. I lose a bit of credit for not getting the sharper $\epsilon k$ exponent the book has.
+% \end{itemize}
+
+% \paragraph{(2) Double sampling / partition step technicalities (about $-1$ point total).}
+% \begin{itemize}
+%   \item In the sample solution, the probability that $Q_1$ misses a ``heavy'' range $r$ (with
+%     $\mu_0(r)$ bounded below) is analyzed exactly using the hypergeometric distribution and binomial
+%     coefficients. The exponent there is derived rigorously from the combinatorial ratio.
+%   \item In my solution, I essentially treated the formation of $Q_1$ as if it came from $k$ independent
+%     draws from $Q_0$ (sampling \emph{with} replacement), and I wrote a bound of the form
+%     \[
+%       \Pr[Q_1 \cap r = \emptyset] \;\le\; (1 - \epsilon/4)^k \;\le\; e^{-\epsilon k/4}.
+%     \]
+%     While this is intuitively correct in the right direction (sampling without replacement only makes the
+%     miss probability smaller), I did not explicitly justify this domination argument. The book is more
+%     careful here.
+%   \item I also wrote
+%     \[
+%       \Pr[B] = \sum_{Q_0} \Pr[B \mid Q_0]\Pr[Q_0] \;\le\; \max_{Q_0} \Pr[B \mid Q_0],
+%     \]
+%     and then informally said it suffices to fix some $Q_0$. The sample solution is clearer that the bound
+%     on $\Pr[B \mid Q_0]$ is \emph{uniform in} $Q_0$, which is why taking the maximum is safe.
+%   \item Finally, I did not cleanly consolidate the two conditions on $k$ (one from Chernoff, one from the
+%     union bound) into a single parameter choice the way the book does.
+% \end{itemize}
+
+\begin{itemize}
+  \item Conceptually, my solution matches the B.6 solution very well: I use the same events $A,B,C$,
+    the same double-sampling trick with $Q_0$, and the same general inequalities.
+  \item The main deductions come from:
+    \begin{enumerate}
+      \item Using a weaker Chernoff bound that gives a $1/\epsilon^2$ dependence instead of $1/\epsilon$.
+      \item Being technically loose in the ``sampling without replacement'' step and in how the parameter
+            $k$ is finally chosen.
+    \end{enumerate}
+  \item Accounting for these, a reasonable self-score is about $8.5/10$.
+\end{itemize}
+
 % Thus, choose $k > \cdots$,
 
 % we have $\Pr[\vert \mu_1(r) - \mu_0(r)\vert + \vert \mu_2(r) - \mu_0(r)\vert >
@@ -195,8 +285,109 @@ terminates with a hitting set with an appropriate measure $k \approx OPT$.
 % is because each missed disk tends to be a light disk with less than
 % $n\epsilon$ points, so the $\sum{p\in Q^*} w_T(p) \approx W_0(1+C\epsilon)^T$
 
+\paragraph{Self Grade}
+I would give myself 7/10.
+
+Comparing my writeup to the book's official solution in B.6, 
+I did use a probability distribution similar to LP; however the I did not get
+the probability through LP, but through iterative doubling for missing disks. I
+proved that the process will terminate eventually. 
+
+% I believe the solution is worth at least 8.5/10 of the total points, given its logical consistency and
+% self-contained nature, despite diverting from the direction that the solution
+% went.
 
 
+% The book’s solution takes the LP relaxation for hitting set, turns the optimal fractional solution into a probability distribution \(X\), observes that every disk has measure at least \(1/\mathrm{OPT}\), and then directly applies the \(\varepsilon\)-net theorem with \(\varepsilon = 1/\mathrm{OPT}\) to get an \(O(\mathrm{OPT}\log\mathrm{OPT})\)-size hitting set with high probability. My argument instead uses a multiplicative-weights style algorithm and a potential function; it is on the right conceptual track but departs from the intended LP-based approach and has some technical gaps.
+
+% Below I break down where I think I earn points and where I lose them.
+
+% \paragraph{(1) High-level algorithmic idea and goal (3/3).}
+% \begin{itemize}
+%   \item I correctly recognize that we are in a geometric hitting-set setting (disks and points in \(\mathbb{R}^2\)), and I aim for an \(O(\log k)\)-approximation where \(k \approx \mathrm{OPT}\).
+%   \item I design a randomized algorithm that samples \(k\log k\) points and only returns when all disks are hit, so the returned set has size \(O(k\log k)\). Combined with the assumption \(k \approx \mathrm{OPT}\), this indeed targets an \(O(\log \mathrm{OPT})\) approximation ratio.
+%   \item I explicitly state that \(\mathrm{OPT} = q\) and that the algorithm should terminate for \(k \approx \mathrm{OPT}\), which is the right qualitative target.
+% \end{itemize}
+% This captures the main shape of what the exercise is asking for, even though my method differs from the book’s LP+rounding+\(\varepsilon\)-net solution.
+
+% \paragraph{(2) Use of geometric structure and \(\varepsilon\)-net intuition (2/3).}
+% \begin{itemize}
+%   \item I correctly note that disks have VC-dimension \(3\), hence a polynomial growth function \(g(n) = O(n^3)\), and I invoke the \(\varepsilon\)-net theorem to argue that sampling \(k\log k\) points should suffice to hit all “heavy” disks.
+%   \item I at least qualitatively use the right scaling: with \(\varepsilon \approx 1/k\), the bounds from the \(\varepsilon\)-net theorem give a sample size of order \(k\log k\), which is consistent with the book’s use of \(\varepsilon\)-nets to get an \(O(\log(\mathrm{OPT}))\) factor.
+% \end{itemize}
+% However, there are important gaps versus the book’s solution:
+% \begin{itemize}
+%   \item The book defines a clean probability measure using the LP solution and then applies Theorem~13.4 / Corollary~13.5 directly with \(\varepsilon = 1/\mathrm{OPT}\). In my solution, I never explicitly define the measure \(\mu\) induced by the current weights \(w\), nor do I clearly state that my sampling is from that measure.
+%   \item I mix together “number of points in a disk” and “measure under the sampling distribution” somewhat loosely (e.g., going from “missed by the sample” to “fewer than \(n/k\) points” without a fully justified link). The book is more precise in its use of measure.
+% \end{itemize}
+% Because the geometric/\(\varepsilon\)-net intuition is essentially correct but not fully formalized, I would give myself \(2/3\) here.
+
+% \paragraph{(3) Potential function and weight-update analysis (1.5/2).}
+% \begin{itemize}
+%   \item I define a potential
+%     \[
+%       \Phi_T = \prod_{p\in Q^*} w_T(p),
+%     \]
+%     where \(Q^*\) is an optimal hitting set of size \(q = \mathrm{OPT}\).
+%   \item I correctly argue that in every iteration where some disk is missed, at least one point of \(Q^*\) lies in that disk and therefore has its weight doubled. This gives a valid lower bound
+%     \[
+%       \Phi_T \ge 2^T\Phi_0 = 2^T.
+%     \]
+%   \item I then use AM--GM to upper-bound \(\Phi_T\) in terms of the total weight
+%     \[
+%       \Phi_T \le \Big(\tfrac{\sum_{p\in Q^*} w_T(p)}{q}\Big)^q 
+%                \le \Big(\tfrac{\sum_{p\in P} w_T(p)}{q}\Big)^q 
+%                = \Big(\tfrac{W_T}{q}\Big)^q.
+%     \]
+%     This is structurally the standard multiplicative-weights argument.
+% \end{itemize}
+% Where I lose some credit:
+% \begin{itemize}
+%   \item I assert a bound \(W_T \le W_0(1 + C/k)^T\) without fully justifying it from the condition \(\mu(D_i) < 1/k\). In the clean multiplicative-weights analysis, we would carefully define \(\mu(D_i)\) as the measure of the missed disk under the current distribution and then compute exactly how much \(W_T\) grows when we double the weights in that disk.
+%   \item My justification of \(\mu(D_i) < 1/k\) relies on an \(\varepsilon\)-net statement that is not clearly instantiated with the correct distribution and parameters; I essentially treat it as “if the disk is missed, then its measure must be small” but do not spell out the precise probability or the conditioning.
+% \end{itemize}
+% So the potential framework is good and largely aligned with standard techniques, but the step bounding \(W_T\) is not fully rigorous. I would give myself \(1.5/2\) here.
+
+% \paragraph{(4) Solving the inequality and bounding the number of rounds \(T\) (0.5/2).}
+% After establishing
+% \[
+% 2^T \le \Big(\frac{W_0(1 + C/k)^T}{q}\Big)^q,
+% \]
+% I attempt to solve for \(T\) and conclude that
+% \[
+% T \le \frac{q(\log W_0 - \log q)}{\log 2 - q\log(1 + C/k)}
+%   < \frac{q(\log W_0 - \log q)}{\log 2 - q(1 + C/k)},
+% \]
+% and then I set \(k = q\) and claim \(T \le q\log(n/q)\) under a suitable choice of \(C\).
+
+% There are several issues here:
+% \begin{itemize}
+%   \item I use an incorrect inequality for \(\log(1 + x)\); the standard bound is \(\log(1+x) \le x\), not \(\log(1+x) \le 1 + x\). My substitution leads to a denominator \(\log 2 - q(1 + C/k)\) that is actually negative once \(q \ge 1\), making the bound meaningless.
+%   \item I do not check the sign of the denominator before concluding an upper bound on \(T\); as written, the algebra does not rigorously imply the claimed \(O(q\log(n/q))\) bound.
+%   \item I never actually quantify the probability with which this bound holds (e.g., “with constant probability” or “with probability at least \(1-\delta\)”), whereas the book solution very clearly leverages the \(\varepsilon\)-net theorem with explicit dependence on \(\delta\).
+% \end{itemize}
+% Because the general idea “the potential cannot keep growing forever” is correct but the detailed inequality manipulation is wrong and would not pass as a clean proof, I would only give myself about \(0.5/2\) here.
+
+% \paragraph{(5) Approximation ratio, relation to \(\mathrm{OPT}\), and comparison to the LP-based solution (0.5/2).}
+% \begin{itemize}
+%   \item On the plus side, I do state that choosing \(k \approx \mathrm{OPT}\) and sampling \(k\log k\) points leads to a hitting set of size \(O(\mathrm{OPT}\log \mathrm{OPT})\), which is the desired \(O(\log(\mathrm{OPT}))\)-approximation.
+%   \item I also mention a binary search over \(k\), which is the right high-level idea to find a near-optimal \(k\) without knowing \(\mathrm{OPT}\) in advance.
+% \end{itemize}
+% However:
+% \begin{itemize}
+%   \item I never tie my algorithm back to the LP relaxation the way the book does. The official solution explicitly writes the LP, defines the distribution \(X\) from the optimal fractional solution, and then applies the \(\varepsilon\)-net theorem; my solution completely ignores the LP structure, even though the exercise is explicitly framed in terms of “randomly rounding the LP.”
+%   \item I do not make a precise statement like “with probability at least \(1-\delta\), the algorithm returns a hitting set of size at most \(C\cdot\mathrm{OPT}\log(\mathrm{OPT}/\delta)\)” or similar. The approximation guarantee is present only at a very informal level.
+%   \item I do not discuss runtime or how many restarts / rounds are needed to get the high-probability guarantee; I only sketch that the process “terminates eventually.”
+% \end{itemize}
+% Because I capture the right \emph{shape} of the approximation ratio but do not connect it cleanly to the LP rounding framework or give a fully quantitative statement, I would give myself \(0.5/2\) here.
+
+\begin{itemize}
+  \item \(-1\) point: My argument does not follow the intended LP-based randomized rounding structure from the book, and I never explicitly use the LP solution \(x\) or the distribution \(X\) as in the official solution.
+  \item \(-1\) points: The use of the \(\varepsilon\)-net theorem and the induced measure \(\mu\) is not fully precise; I mix uniform counts with weighted measures and do not clearly specify the probability space in which the theorem is applied.
+  \item \(-1\) point: The algebraic step that solves for \(T\) from the inequality \(2^T \le (\cdots)^q\) is incorrect (wrong inequality for \(\log(1+x)\), ignoring the sign of the denominator), so the claimed \(O(q\log(n/q))\) bound is not rigorously justified.
+%   \item \(-0.5\) points: The final approximation guarantee and dependence on \(\delta\) are only sketched; I do not state a clean “with high probability” bound or connect the sample size and binary search carefully to \(\mathrm{OPT}\).
+\end{itemize}
+These add up to a \(3\)-point deduction from a perfect score, yielding my self-assessed grade of \(7/10\).
 
 \newpage
 
@@ -276,6 +467,23 @@ accept or reject. This is safe because if it accepts, $h$ is a ``good''
 hypothesis since $err(h) < \epsilon$, and if it rejects, the analysis of the
 second failure event above demonstrates that such an event is unlikely.
 
+\paragraph{Self Grade:}
+
+Overall, I would give myself a score of $8/10$ against the book's solution.
+
+% I \emph{do}:
+% \begin{itemize}
+%   \item Call the weak learner multiple times and test the resulting hypotheses on independent validation sets.
+%   \item Use Chernoff bounds in the right qualitative way for both good and bad hypotheses.
+%   \item Decompose the total failure probability into two events (accepting a bad hypothesis and rejecting all good ones) and argue that each can be made at most $\delta/2$ by choosing suitable $m$ and $k$.
+% \end{itemize}
+
+I did not fully:
+\begin{itemize}
+  \item Match the exact algorithmic structure in the book (the book uses one holdout set and selects the best hypothesis, whereas I accept the first hypothesis that passes a fixed threshold).
+  \item Keep the algebra and probability notation completely clean (there are some slips in inequalities and a typo in the bound relating $q$, $k$, and $\delta$).
+\end{itemize}
+
 \newpage
 \section*{Question 15.3}
 
@@ -320,6 +528,23 @@ second failure event above demonstrates that such an event is unlikely.
 
 \end{enumerate}
 
+\paragraph{Self Grade:}
+Overall, I would give myself a score of about $7/10$ on this solution, compared
+to the book's solution.
+
+I correctly analyze the running time in part (1), obtaining $O(n
+\log(1/\epsilon)\,Q)$, which matches the intended bound. In part (2), my
+argument that the sample hits one of the top-$k$ elements with probability at
+least $1-\epsilon$, and that conditioning on this event gives a marginal gain
+comparable to randomized greedy, essentially follows the book's reasoning (using
+the same "top-$k$ vs.\ $S^*$" inequality), though some conditioning and the
+placement of the $(1-\epsilon)$ factor could be stated more cleanly. The main
+weakness is in part (3): I unroll the recurrence incorrectly and derive the
+wrong closed form, so I do not clearly recover the standard $1 - (1 - q)^i$-type
+bound and final approximation guarantee. Thus, while the core ideas are mostly
+in place, the final quantitative bound is not derived correctly.
+
+
 \newpage
 \section*{Question 16.1}
 
@@ -354,5 +579,17 @@ For sufficiently large $n$, this is equal to $1-H(p)-\delta^2 \ge 1-H(p)-\delta$
 Thus, we have obtained a coding scheme where all strings have an encoding error
 $< \delta$ with the same transmission rate.
 
+
+
+\paragraph{Self Grade}
+I would give myself a score of about $9/10$ on this solution, compared to the book’s solution.
+
+The overall structure is correct and matches the intended proof: I start from Shannon’s theorem with average error at most $\delta^2$ and rate at least $1 - H(p) - \delta^2$, then use Markov’s inequality to argue that at most a $\delta$-fraction of messages have individual error probability larger than $\delta$, discard those messages, and compute the new rate
+\[
+R' = \frac{m'}{n'} = \frac{m + \log_2(1-\delta)}{n},
+\]
+which for large $n$ is still at least $1 - H(p) - \delta$. This captures exactly the standard argument.
+
+The main issues are minor technical slips. For example, the line “for sufficiently large $n$, this is equal to $1-H(p)-\delta^2$” should really be an approximation or an inequality, not exact equality.
 
 \end{document}
