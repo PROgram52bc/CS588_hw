@@ -29,12 +29,48 @@
 \begin{document}
 \section*{Exercise 17.1}
 
-Define the bad event as $X_e \overset{\text{def}}{=} \text{the event that the
-hyper edge } e \text{ is monochromatic}$.
+\begin{proof}
 
-come up with $x$ values.
+Define the bad event as $A_i \overset{\text{def}}{=}$ the event that the hyper
+edge $i$ is monochromatic.
 
-We resample colors for all the vertices incident to that edge.
+Define $x(A_i) = \frac{1}{1+d}$, and we observe that for each hyperedge, there
+are at most $k$ incident vertices, and for each of those $k$ vertices, there are
+at most $k-1$ other hyper edges. So for any edge $i$, it depends on at most
+$k(k-1)$ other hyper edges. Thus $d \le k(k-1)$.
+
+Let $Y_i(c)$ be the event that all vertices incident to edge $i$ has color $c$,
+then if we randomly sample colors for each of the $k$ vertices incident to edge
+$i$, for some $c \in \{0,1\}$, $\Pr[Y_i(c)] = (1/2)^k$, the chance that the
+hyperedge is monochromatic is 
+
+$$\Pr[A_i] = \Pr[Y_i(0) \lor Y_i(1)] \le \Pr[Y_i(0)] + \Pr[Y_i(1)] = (1/2)^{k-1}$$
+
+By corollary 17.3, we know that if $e\Pr[A_i](k(k-1)+1) \le 1$, then
+$\Pr[\bar{A_1}, \cdots, \bar{A_n}] > 0$, meaning the coloring is
+possible.
+
+Rearranging the condition and substituting the values, we have
+
+\[
+\begin{array}{rll}
+    LHS &=& e(1/2)^{k-1}(k(k-1)+1) \\
+    &=& \frac{e(k(k-1)+1)}{2^{k-1}} \\
+    &=& \frac{e(k^2 - k + 1)}{2^{k-1}} \\
+    &\le& 1
+\end{array}
+\]
+
+Rearranging, it suffices to have
+
+$$ k^2-k+1 \le 2^{k-1}/e$$
+
+For $k = 8$, we have $LHS \approx 57$ and $RHS \approx 47$, where the inequality doesn't hold.
+For $k = 9$, we have $LHS \approx 73$ and $RHS \approx 94$, where the inequality holds.
+
+Since RHS has exponential growth which is faster than polynomial growth in LHS, for all $k > 9$, this inequality holds.
+\end{proof}
+
 
 \newpage
 \section*{Exercise 19.2}
@@ -82,8 +118,7 @@ for some $s_k$ where there is a path of length $k$ from $u$ to $s_k$.
 \section*{Exercise 20.3}
 
 \begin{proof}
-    
-
+ 
 Let $G = (V,E)$ be a directed graph such that $s \in V$ and $t \in V$.  We
 construct edges among the $n=\vert V\vert$ vertices as such: 
 \begin{enumerate}
