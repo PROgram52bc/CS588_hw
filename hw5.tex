@@ -162,6 +162,26 @@ we have the effective resistance $< \ell$ (why?)
 \newpage
 \section*{Exercise 21.7}
 
-Need to show that with the initial distribution $x = \mathds{1}_v$, $\Delta_{max}/\Delta_{min} = 1$.
+\begin{proof}
+    
+Let the initial distribution be $\mathds{1}_v$ where $v$ is the vertex in $G$ with the maximum weighted degree.
+Then according to the proof of Lemma 21.10, 
+
+we have \[
+\begin{array}{rll}
+    \| R^k x - \frac{1}{2W}d \|^2 &=& \|D^{1/2}SD^{-1/2}x\|^2 \\
+    &\le& \max\{\mu_2^{2k},\mu_n^{2k}\} \Delta_{max}\langle x, D^{-1} x\rangle \\
+    &\overset{(1)}{=}& \max\{\mu_2^{2k},\mu_n^{2k}\} \Delta_{max} \frac{1}{d(v)} \\
+    &\overset{(2)}{=}& \max\{\mu_2^{2k},\mu_n^{2k}\} \Delta_{max} \frac{1}{\Delta_{max}} \\
+    &=& \max\{\mu_2^{2k},\mu_n^{2k}\} \\
+    &=& \max\{\mu_2,\vert \mu_n\vert \}^{2k}
+\end{array}
+\]
+where (1) is because $D$ is a diagonal matrix of the vertex degrees, and $x = \mathds{1}_v$
+(2) is because $v$ is the vertex with maximum weighted degree.
+
+Thus, $\| R^kx-s \| = \| R^kx- \frac{1}{2w}d \| \le \max\{\mu_2, \vert \mu_n\vert \}^k = (1-\gamma)^k$
+
+\end{proof}
 
 \end{document}
