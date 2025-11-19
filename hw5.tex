@@ -1,0 +1,167 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage[ruled,vlined,linesnumbered,noend]{algorithm2e}
+\usepackage{dsfont}
+\usepackage{fancyhdr}
+\usepackage{amsthm}
+
+\newcommand{\hw}{CS 588: Homework 5}
+\newcommand{\me}{David Deng}
+
+\pagestyle{fancy}
+
+\fancyhf{} % clear all header/footer fields
+
+% Optional thin rule above the footer (comment out if you don't want it)
+\renewcommand{\footrulewidth}{0.4pt}
+
+\fancyfoot[L]{\hw}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\me}
+
+% Ensure chapter/section opening pages also use the same footer (for classes that use 'plain' style)
+\fancypagestyle{plain}{%
+\fancyfoot[L]{\hw}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\me}
+}
+
+\begin{document}
+\section*{Exercise 17.1}
+
+Define the bad event as $X_e \overset{\text{def}}{=} \text{the event that the
+hyper edge } e \text{ is monochromatic}$.
+
+come up with $x$ values.
+
+We resample colors for all the vertices incident to that edge.
+
+\newpage
+\section*{Exercise 19.2}
+
+\begin{proof}
+We prove the claim by contradiction. Suppose otherwise, and let $x_v <
+n^{-(n+1)}$, then by stationary distribution, we have $\sum_{i\neq v} x_i \ge
+1-n^{-(n+1)}$.
+
+Further, let $u$ be the heaviest vertex in the graph, and by definition, $w(u)
+\ge \frac{1-n^{-(n+1)}}{n-1}$.
+
+Since $G$ is a strongly connected graph, there is a shortest path of length
+$\ell \le n-1$ from $u$ to $v$ that contains no cycle (if there are cycles, we
+remove the cycle and get a shorter path). Let the path be $(u, s_1, \cdots,
+s_{\ell-1}, v)$ for some $\ell \le n-1$.
+
+Since $G$ is a simple graph, each step of the random walk will ``pass along''
+the flow to its neighboring vertices evenly, and since each vertex has at most
+$n-1$ neighbors, the fractional amount is at least $\frac{1}{n-1}$.
+
+This is also true for $u$. Define $\Delta_{ut}$ as the amount of flow passed
+from $u$ to $t$ by one step of the random walk, then we have
+$$\Delta{us_k} = w(u) (\frac{1}{n-1})^k \ge \frac{1-n^{-(n+1)}}{n-1} (\frac{1}{n-1})^k$$
+
+for some $s_k$ where there is a path of length $k$ from $u$ to $s_k$.
+
+\[
+\begin{array}{rll}
+\Delta_{uv} & =   & w(u) (\frac{1}{n-1})^\ell\\
+            & \ge & w(u) (\frac{1}{n-1})^{n-1}\\
+            & \ge & \frac{1-n^{-(n+1)}}{n-1} (\frac{1}{n-1})^{n-1}\\
+            & = & \frac{n^{n+1}-1}{n^{n+1}} (\frac{1}{n-1})^{n}\\
+            & = & \frac{1}{n^{n+1}} \frac{n^{n+1}-1}{(n-1)^{n}}\\
+            & = & \frac{1}{n^{n+1}} \frac{n\cdot n^{n}-1}{(n-1)^{n}}\\
+            & = & \frac{1}{n^{n+1}} \frac{n^{n} + (n-1)n^n -1}{(n-1)^{n}}\\
+            & \ge & \frac{1}{n^{n+1}} \frac{n^{n}}{(n-1)^{n}}\\
+            & \ge & \frac{1}{n^{n+1}}
+\end{array}
+\]
+
+\end{proof}
+
+\newpage
+\section*{Exercise 20.3}
+
+\begin{proof}
+    
+
+Let $G = (V,E)$ be a directed graph such that $s \in V$ and $t \in V$.  We
+construct edges among the $n=\vert V\vert$ vertices as such: 
+\begin{enumerate}
+
+    \item Add $n-1$ directed edges $(s,v_1), (v_1,v_2), \cdots, (v_{n-2}, t)$
+    for vertices $s,t \notin \{v_1, \cdots, v_{n-2}\}$, such that there is a
+    path of length $n-1$ from $s$ to $t$.
+
+    \item Furthermore, for every vertices $v \ne s$, add an edge $(v,s)$. 
+
+\end{enumerate}
+
+Since there is a path from $s$ to every vertex, and a path from every vertex to
+$s$, $G$ is a strongly connected graph. Since there are no edges connecting to
+the same vertex or multiple edges between the same pair of vertices, $G$ is also
+a simple graph by construction.
+
+Observe that for every vertex $v \notin \{s,t\}$, a random walk from $v$ has
+$1/2$ chance of getting one step closer to $t$, and $1/2$ chance of going back
+to $s$, where we'd have to start over again.
+
+A successful random walk from $s$ to $t$ can be seen as tossing $n-2$ heads in a row, which has a probability of $p=\frac{1}{2^{n-2}}$.
+Since each time we fail, we start from $s$ again, the random walk can be seen as bernoulli trials with probability $p=\frac{1}{2^{n-2}}$. 
+Let $X$ be a random variable representing the number of trials till the first succcess, we have
+
+$$\mathbb{E}[X] = 1/p = 2^{n-2}$$
+
+which is exponential in $n$.
+
+\end{proof}
+
+
+% For directed graphs, we can compute the hitting times as follow:
+
+% $$H(u,u) = 0$$
+% $$H(u,t) = 1 + \frac{1}{\deg^+(u)} \sum_{(u,v) \in E} H(v,t)$$
+
+% Let $v_i \notin \{s,t\}$, then we have $H(v_i, t) = 1 + \frac{1}{2} \bigl( H(s,t) + H(v_{i+1}, t)\bigr)$ and 
+
+% Thus, we can write $H(s,t)$ as a recurrence:
+
+% \[
+% \begin{array}{rll}
+%     H(s,t) & =\ & 1 + H(v_1, t) \\ 
+%     & =\ & 1 + 1 + \frac{1}{2} \bigl( H(s,t) + H(v_2, t)\bigr) 
+% \end{array}
+% \]
+
+% We have $H(s,v_1) = 1 + \frac{1}{2} (H)$
+
+% Now what to do? How to lower-bound the hitting time?
+
+\newpage
+\section*{Exercise 20.5}
+
+Let the graph Alice walks be $G_1 = (V_1,E_1)$, and the graph Bob walks be $G_2
+= (V_2,E_2)$. Define a dual-graph $G^2 = (V^2,E^2)$, where for each vertex $v_1
+\in G_1$ and $v_2 \in V_2$, define a vertex in $v^2 = (v_1,v_2) \in V^2$. 
+similarly, for each edge $e_1 \in E_1$ and $e_2 \in E_2$, define an edge $e^2 =
+(e_1,e_2) \in E^2$.
+
+Note that in the dual graph, there are $\vert V^2\vert = \vert V_1 \vert\vert
+V_2 \vert$ vertices and 
+
+By Lemma 20.12, if $e = (s,t) \in E$, then $$H(s,t) + H(t,s) \le 2m$$
+
+Since there is an $\ell$-edge walk from $s$ to $x$: $(s_{x1}, \cdots,
+s_{x\ell})$ and from $t$ to $x$ $(t_{x1}, \cdots, t_{x\ell})$, in the dual
+graph, there is an $\ell$-edge walk from $(s,t)$ to $(x,x)$: $((s_{x1}, t_{x1}),
+\cdots, (s_{x\ell}, t_{x\ell}))$, representing a walk where Alice and Bob meets.
+
+Since the path is of length $\ell$, 
+
+we have the effective resistance $< \ell$ (why?)
+
+\newpage
+\section*{Exercise 21.7}
+
+Need to show that with the initial distribution $x = \mathds{1}_v$, $\Delta_{max}/\Delta_{min} = 1$.
+
+\end{document}
