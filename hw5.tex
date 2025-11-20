@@ -174,25 +174,39 @@ which is exponential in $n$.
 \newpage
 \section*{Exercise 20.5}
 
-Let the graph Alice walks be $G_1 = (V_1,E_1)$, and the graph Bob walks be $G_2
-= (V_2,E_2)$. Define a dual-graph $G^2 = (V^2,E^2)$, where for each vertex $v_1
-\in G_1$ and $v_2 \in V_2$, define a vertex in $v^2 = (v_1,v_2) \in V^2$. 
-similarly, for each edge $e_1 \in E_1$ and $e_2 \in E_2$, define an edge $e^2 =
-(e_1,e_2) \in E^2$.
+\begin{proof}
 
-Note that in the dual graph, there are $\vert V^2\vert = \vert V_1 \vert\vert
-V_2 \vert$ vertices and 
+Define a product-graph $G^2 = (V^2,E^2)$, where 
+$V^2 = \{ (v_1,v_2) \ \vert \ v_1, v_2 \in V \}$ and
+$E^2 = \{ \{ (v_1, v_2), (v_1', v_2') \} \ \vert \ (v_1, v_2), (v_1', v_2') \in E \}$
+
+First observe that the number of vertices in the product graph $\vert V^2 \vert
+= \vert V \vert^2 = n^2$, as for $n$ vertices, there are $n^2$ ordered pairs.
+
+For the number of edges in the product graph, we observe that there are $\vert
+E^2 \vert = \vert E \vert^2 = m^2$ \textit{ordered pairs} of edges in the
+original graph. We also observe that each ordered pair of edges $((v_1, v_2),
+(v_1', v_2'))$ in the original graph (we can interpret $v_1$ and $v_2$ as a step
+of random walk by Alice, and $v_1'$ and $v_2'$ by Bob, thus they are ordered),
+form exactly new two edges in the product graph: $\{ (v_1, v_1'), (v_2, v_2')
+\}$ and $\{ (v_2, v_1'), (v_1, v_2') \}$ (Alice and Bob either move in the same
+direction or the opposite direction).
+
+Thus, in the product graph, there are $2m^2$ edges in total.
 
 By Lemma 20.12, if $e = (s,t) \in E$, then $$H(s,t) + H(t,s) \le 2m$$
 
+where $m$ is the number of edges in the graph, and $s$,$t$, are vertices in the graph.
+
 Since there is an $\ell$-edge walk from $s$ to $x$: $(s_{x1}, \cdots,
-s_{x\ell})$ and from $t$ to $x$ $(t_{x1}, \cdots, t_{x\ell})$, in the dual
+s_{x\ell})$ and from $t$ to $x$ $(t_{x1}, \cdots, t_{x\ell})$, in the product
 graph, there is an $\ell$-edge walk from $(s,t)$ to $(x,x)$: $((s_{x1}, t_{x1}),
 \cdots, (s_{x\ell}, t_{x\ell}))$, representing a walk where Alice and Bob meets.
 
-Since the path is of length $\ell$, 
+Since the path from $(s,t)$ to $(x,x)$ is of length $\ell$, we have 
 
-we have the effective resistance $< \ell$ (why?)
+$$H((s,t),(x,x)) \le H((s,t),(x,x)) + H((x,x), (s,t)) \le 2 \cdot 2m^2\ell = 4m^2\ell$$
+\end{proof}
 
 \newpage
 \section*{Exercise 21.7}
