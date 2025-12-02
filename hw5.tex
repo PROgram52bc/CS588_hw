@@ -71,6 +71,9 @@ For $k = 9$, we have $LHS \approx 73$ and $RHS \approx 94$, where the inequality
 Since RHS has exponential growth which is faster than polynomial growth in LHS, for all $k > 9$, this inequality holds.
 \end{proof}
 
+% Exercise 17.1
+\textbf{Self-grade:} I would give myself \(8/10\): I correctly set up the bad events \(A_i\), the dependency degree \(d \le k(k-1)\), chose suitable \(x(A_i)\), and checked the condition \(e \Pr[A_i](d+1) \le 1\). However, I did not really describe a concrete resampling algorithm, so my solution is mainly an existence proof via the Local Lemma.
+
 
 \newpage
 \section*{Exercise 19.2}
@@ -113,6 +116,10 @@ for some $s_k$ where there is a path of length $k$ from $u$ to $s_k$.
 \]
 
 \end{proof}
+
+% Exercise 19.2
+\textbf{Self-grade:} I would give myself \(9/10\): I used a path from the maximum-mass vertex to \(v\) and a stationary-flow argument to derive the lower bound \(x_v \ge n^{-(n+1)}\), but I was a bit loose in explicitly stating the “start at stationarity, apply one step, still stationary” contradiction that closes the proof.
+
 
 \newpage
 \section*{Exercise 20.3}
@@ -170,6 +177,9 @@ which is exponential in $n$.
 % We have $H(s,v_1) = 1 + \frac{1}{2} (H)$
 
 % Now what to do? How to lower-bound the hitting time?
+% Exercise 20.3
+\textbf{Self-grade:} I would give myself \(10/10\): I constructed a graph where reaching \(t\) requires a long streak of “forward” moves and modeled the random walk as a sequence of fair coin tosses, arguing that a successful walk corresponds to an exponentially unlikely binomial event, which matches the intended hitting-time analysis.
+
 
 \newpage
 \section*{Exercise 20.5}
@@ -207,6 +217,9 @@ Since the path from $(s,t)$ to $(x,x)$ is of length $\ell$, we have
 
 $$H((s,t),(x,x)) \le H((s,t),(x,x)) + H((x,x), (s,t)) \le 2 \cdot 2m^2\ell = 4m^2\ell$$
 \end{proof}
+% Exercise 20.5
+\textbf{Self-grade:} I would give myself \(10/10\): I correctly set up the walk on the product graph \(G \otimes G\), identified its \(n^2\) vertices and \(m^2\) edges, and used an \(\ell\)-edge walk from \((s,t)\) to \((x,x)\) to derive the stronger bound \(O(m^2 \ell)\) on the expected meeting time; since the rubric treats this stronger bound as an alternative to the weaker one, this should receive full credit.
+
 
 \newpage
 \section*{Exercise 21.7}
@@ -232,5 +245,9 @@ where (1) is because $D$ is a diagonal matrix of the vertex degrees, and $x = \m
 Thus, $\| R^kx-s \| = \| R^kx- \frac{1}{2w}d \| \le \max\{\mu_2, \vert \mu_n\vert \}^k = (1-\gamma)^k$
 
 \end{proof}
+
+% Exercise 21.7
+\textbf{Self-grade:} I would give myself \(10/10\): I chose the vertex \(v\) of maximum degree, plugged \(x = \mathbf{1}_v\) into Lemma 21.10, used \(\deg(v) = \Delta_{\max}\) to make \(\langle x, D^{-1} x \rangle = 1/\Delta_{\max}\), and concluded that \(\|R^k x - s\|_2 \le (1-\gamma)^k\), which is exactly the desired bound.
+
 
 \end{document}
