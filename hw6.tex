@@ -149,7 +149,19 @@
 
     \item
     \begin{proof}
-        
+        Since $\sqrt{d}$ is the first eigenvector $u_1$ of $M$ corresponding to the eigenvalue of $0$ ($1$ for $Q$), the second eigenvector $\lambda_2$ can be obtained by optimizing the quotient 
+
+        $$\lambda_2 = \min_{v \perp \sqrt{d}} = \frac{\langle v,Mv
+        \rangle}{\langle v,v \rangle}$$
+
+        From the previous question, we know that $z = \alpha x + \beta y$ is a
+        possible candidate for $v$ that satisfies $v \perp \sqrt{d}$.
+
+        Thus, it must be the case that $\lambda_2 \le \frac{\langle z,Mz
+        \rangle}{\langle v,v \rangle}$. Since we have $ \frac{\langle z,Mz
+        \rangle}{\langle v,v \rangle} \le 2 \Psi(G)$, we have $\lambda_2 \le 2
+        \Psi(G)$.
+
     \end{proof}
 
 \end{enumerate}
