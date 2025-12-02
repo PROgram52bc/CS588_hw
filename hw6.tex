@@ -1,0 +1,209 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage[ruled,vlined,linesnumbered,noend]{algorithm2e}
+\usepackage{dsfont}
+\usepackage{fancyhdr}
+\usepackage{amsthm}
+
+\newcommand{\hw}{CS 588: Homework 6}
+\newcommand{\me}{David Deng}
+
+\pagestyle{fancy}
+
+\fancyhf{} % clear all header/footer fields
+
+% Optional thin rule above the footer (comment out if you don't want it)
+\renewcommand{\footrulewidth}{0.4pt}
+
+\fancyfoot[L]{\hw}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\me}
+
+% Ensure chapter/section opening pages also use the same footer (for classes that use 'plain' style)
+\fancypagestyle{plain}{%
+\fancyfoot[L]{\hw}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\me}
+}
+
+\begin{document}
+\section*{Exercise 22.1}
+
+\begin{enumerate}
+    \item
+
+    \begin{proof}
+    
+    We first show that the numerator $\langle x, Mx \rangle$ is equivalent to
+    $\langle \mathds{1}_S, L\mathds{1}_S \rangle$:
+
+    \[\begin{array}{lll}
+    & {\langle x, Mx \rangle} \\
+    = & {\langle x, (I-Q)x \rangle} \\
+    = & {\langle x, (I-D^{-1/2}AD^{-1/2})x \rangle} \\
+    = & {\langle D^{1/2}\mathds{1}_{S}, (I-D^{-1/2}AD^{-1/2})D^{1/2}\mathds{1}_{S} \rangle} \\
+    = & {\langle D^{1/2}\mathds{1}_{S}, D^{1/2}\mathds{1}_{S}-D^{-1/2}AD^{-1/2}D^{1/2}\mathds{1}_{S} \rangle} \\
+    = & {\langle D^{1/2}\mathds{1}_{S}, D^{1/2}\mathds{1}_{S}-D^{-1/2}A\mathds{1}_{S} \rangle} \\
+    \overset{(1)}{=} & {\langle D^{1/2}\mathds{1}_{S}, D^{1/2}\mathds{1}_{S}-D^{1/2}D^{-1}A\mathds{1}_{S} \rangle} \\
+    \overset{(2)}{=} & {\langle \mathds{1}_{S}, D\mathds{1}_{S}-DD^{-1}A\mathds{1}_{S} \rangle} \\
+    = & {\langle \mathds{1}_{S}, D\mathds{1}_{S}-A\mathds{1}_{S} \rangle} \\
+    = & {\langle \mathds{1}_{S}, (D - A)\mathds{1}_{S} \rangle} \\
+    = & {\langle \mathds{1}_{S}, L\mathds{1}_{S} \rangle} \\
+    \end{array}\]
+
+    where (1) and (2) are because $D$ is a diagonal matrix.
+
+    We then show that the denominator $\langle x,x\rangle$ is equivalent to
+    $\langle \mathds{1}_S, D\mathds{1}_S \rangle$:
+
+    \[\begin{array}{lll}
+    & \langle x,x \rangle \\
+    = & {\langle D^{1/2}\mathds{1}_{S},D^{1/2}\mathds{1}_{S} \rangle} \\
+    \overset{(3)}{=} & {\langle \mathds{1}_{S},D\mathds{1}_{S} \rangle}
+    \end{array}\]
+
+    where (3) is because $D$ is a diagonal matrix.
+    
+    Thus, we have $$\frac{\langle x, Mx \rangle}{\langle x,x \rangle} =
+    \frac{\langle \mathds{1}_{S}, L\mathds{1}_{S} \rangle}{\langle
+    \mathds{1}_{S},D\mathds{1}_{S} \rangle}$$
+    
+    Similarly, we can show $$\frac{\langle y, My \rangle}{\langle y,y \rangle} =
+    \frac{\langle \mathds{1}_{\bar{S}}, L\mathds{1}_{\bar{S}} \rangle}{\langle
+    \mathds{1}_{\bar{S}},D\mathds{1}_{\bar{S}} \rangle}$$ using the same
+    derivation.
+    
+    We also have $\langle x,y\rangle = 0$ because $S \cap \bar{S} = \emptyset$,
+    thus $(\mathds{1}_S)_i (\mathds{1}_{\bar{S}})_i = 0$ for all $i$. Therefore,
+    
+    $$ \langle x,y\rangle = \sum_{i \in V} x_i y_i = \sum_{i \in V} D^{1/2}_{ii}
+    (\mathds{1}_S)_i D^{1/2}_{ii} (\mathds{1}_{\bar{S}})_i = \sum_{i} 0 = 0$$
+    \end{proof}
+
+    \item 
+    \begin{proof}
+    Let \[\begin{array}{lll}
+    z &=& \alpha x + \beta y \\
+    & = & \alpha D^{1/2}\mathds{1}_{S} + \beta D^{1/2}\mathds{1}_{\bar{S}} \\
+    & = & D^{1/2}(\alpha \mathds{1}_{S} + \beta \mathds{1}_{\bar{S}}) \\
+    & = & D^{1/2}u
+    \end{array}\]
+    where $u = \alpha \mathds{1}_{S} + \beta \mathds{1}_{\bar{S}}$.
+
+    We want to show that $$\frac{\langle z,Mz \rangle}{\langle z,z \rangle} \le 2 \Psi(G)$$
+
+    For the numerator, we have $$\begin{array}{lll}
+    \langle z,Mz \rangle &=& \langle D^{1/2}u, MD^{1/2}u \rangle \\
+    &=& \langle D^{1/2}u, D^{-1/2}LD^{-1/2}D^{1/2}u \rangle \\
+    &=& \langle D^{1/2}u, D^{-1/2}Lu \rangle \\
+    &=& \langle u, Lu \rangle \\
+    &\overset{(1)}{=}& \sum_{e = \{a,b\} \in E} (u_a - u_b)^2 \\
+    &\overset{(2)}{=}& \sum_{e = \{a,b\} \in \delta(S)} (\alpha - \beta)^2 \\
+    &=& \vert \delta(S) \vert \cdot(\alpha - \beta)^2 \\
+    \end{array}$$
+
+    where (1) is by the definition of $L$ described in section 21.1 in the
+    textbook, and (2) is because all $u_a - u_b = 0$ if $a,b \in S$ or $a,b \in
+    \bar{S}$, and $(u_a - u_b)^2 = (u_b - u_a)^2 = (\alpha - \beta)^2$ for some $a \in S$ and $b \in \bar{S}$ WLOG.
+
+    For the denominator, we have $$\begin{array}{lll}
+        \langle z,z \rangle &=& \alpha^2 \langle x,x \rangle + \beta^2 \langle y,y \rangle + 2\alpha\beta \langle x,y \rangle \\
+        &\overset{(2)}{=}& \alpha^2 \langle x,x \rangle + \beta^2 \langle y,y \rangle \\
+        &=& \alpha^2 \langle \mathds{1}_{S}, D\mathds{1}_{S} \rangle + \beta^2 \langle \mathds{1}_{\bar{S}}, D\mathds{1}_{\bar{S}} \rangle \\
+        &=& \alpha^2 vol(S) + \beta^2 vol(\bar{S}) \\
+        &\overset{(3)}{\ge}& \alpha^2 vol(S) + \beta^2 vol(S) \\
+    \end{array}$$
+    where (2) is because $\langle x,y\rangle = 0$, (3) is because $vol(S) \le vol(G)/2 \le vol(\bar{S})$.
+
+    Overall, we have $$\begin{array}{lll}
+    \frac{\langle z,Mz \rangle}{\langle z,z \rangle} 
+    &=& \frac{\vert \delta(S) \vert \cdot (\alpha - \beta)^2}{\alpha^2 vol(S) + \beta^2 vol(\bar{S}) } \\
+    &\le& \frac{\vert \delta(S) \vert \cdot (\alpha - \beta)^2}{\alpha^2 vol(S) + \beta^2 vol(S) } \\
+    &\overset{(3)}{=}& \Psi(S) \frac{(\alpha - \beta)^2}{\alpha^2 + \beta^2} \\
+    &\overset{(4)}{=}& \Psi(G) \frac{(\alpha - \beta)^2}{\alpha^2 + \beta^2} \\
+    &\overset{(5)}{\le}& 2\Psi(G)
+    \end{array}$$
+
+    where (3) is by the definition of conductance, (4) is by assumption, (5) is
+    because we can show $\frac{(\alpha - \beta)^2}{2(\alpha^2 + \beta^2)} \le 1$ by
+    multiplying both sides by a positive $2(\alpha^2 + \beta^2)$. We reduce the goal to
+    $$(\alpha-\beta)^2 \le 2(\alpha^2 + \beta^2)$$
+    $$\alpha^2 - 2 \alpha\beta + \beta^2 \le 2(\alpha^2 + \beta^2)$$
+    $$- 2 \alpha\beta \le \alpha^2 + \beta^2$$
+    $$0 \le \alpha^2 +2\alpha\beta+ \beta^2$$
+    $$0 \le (\alpha + \beta)^2 $$
+    \end{proof}
+
+    \item 
+    \begin{proof}
+        We have \[\begin{array}{lll}
+            LHS &=& \alpha\langle \sqrt{d},x \rangle + \beta\langle \sqrt{d},y \rangle \\
+            &\overset{(1)}{=}& \alpha\langle \sqrt{d},D^{1/2}\mathds{1}_{S} \rangle + \beta\langle \sqrt{d},D^{1/2}\mathds{1}_{\bar{S}} \rangle \\
+            &\overset{(2)}{=}& \alpha\langle \mathds{1}_{S}, D\mathds{1}_{S} \rangle + \beta\langle \mathds{1}_{\bar{S}}, D\mathds{1}_{\bar{S}} \rangle \\
+            &\overset{(3)}{=}& \alpha \cdot vol(S) + \beta \cdot vol(\bar{S}) \\
+        \end{array}\]
+        where (1) is by the definition of $x$ and $y$, (2) is because $D$ is a diagonal matrix, (3) is by the definition of volume.
+
+        We can then choose $\alpha = -vol(\bar{S})$ and $\beta = vol(S)$ to get 0 as a result.
+    \end{proof}
+
+    \item
+    \begin{proof}
+        
+    \end{proof}
+
+\end{enumerate}
+
+
+\newpage
+\section*{Exercise 23.6}
+
+\begin{enumerate}
+
+    \item 
+    \begin{proof}
+    
+    By contradiction, suppose there is some $S$ with small cut s.t. $\vert
+    \delta(S)\vert < \vert S\vert / 6$, then by the claim, for all $T$ s.t.
+    $\vert T\vert = k/6 = \vert S\vert/6$, there is a vertex $v$ in $S$ matching to a
+    vertex outside of $S \cup T$.
+
+    Then we can construct an instance of $T$ with size $\vert S\vert/6$ that
+    contains all vertices incident to $\delta(S)$. We know this is possible
+    because $\vert \delta(S) \vert < \vert S \vert/6$ by assumption.
+
+    Now, for this particular $T$ we constructed, there is no vertex in $S$
+    matching to a vertex outside of $S \cup T$, which is a contradiction.
+
+    Therefore, the claim above must imply that $\vert \delta(S) \vert \ge \vert
+    S \vert /6$ for all $S$ with $\vert S\vert \le n/2$.
+    \end{proof}
+
+    \item 
+
+    By definition of conductance, $$\Psi(G) = \min_{S \subsetneq G, vol(S) \le
+    vol(G)/2} \frac{w(\delta(S))}{vol(S)}$$
+
+    Since the graph has $d$ perfect matchings, each vertex has a constant degree
+    of $d$, and for any subset $\vert S \vert \le n/2$, $vol(S) \le vol(G)/2$.
+
+    By the claim, we know that for every such set $S$, $\vert \delta(S) \vert
+    \ge \vert S\vert / 6$, thus $w(\delta(S)) \ge \vert S\vert /6$.
+
+    Therefore, the conductance of the graph is $\Psi(G) \le \frac{w(\delta(S))}{vol(S)} \le $
+
+    \item Let $M$ denote the number of matchings in the graph $G$. We have $M = \cdots$
+    
+    TODO: Count the number of matchings and compute the probability of each matching.
+
+    \item 
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 4.8}
+
+\newpage
+\section*{Problem 4.2}
+
+\end{document}
