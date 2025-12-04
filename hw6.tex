@@ -192,30 +192,298 @@
     \end{proof}
 
     \item 
+    \begin{proof}
+        
 
     By definition of conductance, $$\Psi(G) = \min_{S \subsetneq G, vol(S) \le
     vol(G)/2} \frac{w(\delta(S))}{vol(S)}$$
 
     Since the graph has $d$ perfect matchings, each vertex has a constant degree
-    of $d$, and for any subset $\vert S \vert \le n/2$, $vol(S) \le vol(G)/2$.
+    of $d$, and for any subset $S $, $vol(S) = \vert S \vert \cdot d$.
 
     By the claim, we know that for every such set $S$, $\vert \delta(S) \vert
     \ge \vert S\vert / 6$, thus $w(\delta(S)) \ge \vert S\vert /6$.
 
-    Therefore, the conductance of the graph is $\Psi(G) \le \frac{w(\delta(S))}{vol(S)} \le $
-
-    \item Let $M$ denote the number of matchings in the graph $G$. We have $M = \cdots$
-    
-    TODO: Count the number of matchings and compute the probability of each matching.
+    Therefore, the conductance of the graph is $\Psi(G) = \frac{\vert
+    \delta(S)\vert}{vol(S)} \ge \frac{\vert S\vert / 6}{\vert S\vert \cdot d} =
+    \frac{1}{6d}$
+    \end{proof}
 
     \item 
+    \begin{proof}
+    Let $M$ denote the number of matchings in the graph $G$. We have $M =
+    (n-1) \times (n-3) \times (n-5) \times \cdots \times 1$.
+
+    Let $m$ be a particular matching among the $M$ matchings.
+
+    The algorithm finds $m$ if and only if for each of the $n/2$ steps, it picks
+    the correct vertex, which has a probability of $\Pr[\text{find } m] =
+    \frac{1}{n-1} \times \frac{1}{n-3} \times \frac{1}{n-5} \times \cdots \times
+    \frac{1}{1} = \frac{1}{M}$. Therefore, the algorithm generates a uniformly
+    random perfect matching.
+    \end{proof}
+
+    \item 
+    \begin{proof}
+    Let $X_i$ denote the event that the $i^{th}$ sampled matching ended up in $S \cup T$. Then 
+    $$\Pr[X_1] = \frac{7k/6 -1}{n-1}$$
+    $$\Pr[X_2 \vert X_1] = \frac{7k/6 -3}{n-3}$$
+    $$\Pr[X_i \vert X_1, X_2, \cdots, X_{i-1}] = \frac{7k/6 -(2i-1)}{n-(2i-1)}$$
+    
+    In the worst case, we can have a matching of size $k/2$ where all $k/2$
+    vertices in $s$ are matched to the other $k/2$ vertices in $S$.
+
+    The probability of this happening is \[\begin{array}{lll}
+    \Pr[X_{k/2}] &=& \prod_{i=1}^{k/2}{\Pr[X_i \vert X_1, X_2, \cdots, X_{i-1}]} \\
+    &=& \prod_{i=1}^{k/2}{\frac{7k/6 -(2i-1)}{n-(2i-1)}} \\
+    &\le& \prod_{i=1}^{k/2}{\frac{7k/6}{n}} \\
+    &=& \bigl(\frac{7k}{6n}\bigr)^{k/2}
+    \end{array}\]
+
+    By union bound, the probability that this occurs to all $d$ matching is
+    \[ \begin{array}{lll}
+        $$\begin{array}{lll}
+        \Pr[X_{k/2}^d] &=& \Pr[X_{k/2}]^d \\
+        &\le& \bigl(\frac{7k}{6n}\bigr)^{kd/2} \\
+        &=& \bigl(\frac{7}{6}\bigr)^{kd/2} \cdot \bigl(\frac{k}{n}\bigr)^{kd/2} \\
+        &\overset{(1)}{\le}& \bigl(\frac{7}{6}\bigr)^{kd/2} \cdot {{n}\choose{k}}^{-d/2} \\
+        &=& \bigl(\frac{7}{6}\bigr)^{kd/2} \cdot {{n}\choose{k}}^{-d/3} \cdot {{n}\choose{k}}^{-d/6} \\
+        &\le& \bigl(\frac{7}{6}\bigr)^{kd/2} \cdot {\bigl(\frac{k}{n}\bigr)}^{kd/3} \cdot {{n}\choose{k}}^{-d/6} \\
+        &\overset{(2)}{\le}& {{n}\choose{k}}^{-d/6} \\
+        \end{array}$$
+    \end{array} \]
+
+    where (1) is because $(\frac{k}{n})^k \le {n \choose k}^{-1}$, (2) is
+    because $\left(\frac{7}{6}\right)^{kd/2} \cdot \left(\frac{k}{n}\right)^{kd/3} \le 1$
+
+    \end{proof}
+    \item 
+    \begin{proof}
+        We have 
+        \[\begin{array}{lll}
+        \Pr[\text{fail}] &\le& \sum_{k=1}^{n/2} \binom{n}{k} \cdot \binom{n-k}{k/6} \cdot \binom{n}{k}^{-d/6} \\
+        &=& \sum_{k=1}^{n/2} \binom{n}{k}^{1-d/6} \cdot \binom{n-k}{k/6} \\ 
+        &\overset{(1)}{\le}& \sum_{k=1}^{n/2} \binom{n}{k}^{-1} \cdot \binom{n-k}{k/6} \\
+        &=& \sum_{k=1}^{n/2} \frac{\binom{n-k}{k/6}}{\binom{n}{k}} \\
+        &\le& \sum_{k=1}^{n/2} \frac{(\frac{6e(n-k)}{k})^{k/6}}{(\frac{n}{k})^k} \\
+        &=& \sum_{k=1}^{n/2} \frac{(6e)^{k/6}(n-k)^{k/6}k^k}{(k^{k/6})n^k} \\
+        &\le& \sum_{k=1}^{n/2} \frac{(6e)^{k/6}k^{5k/6}}{n^{5k/6}} \\
+        &=& \sum_{k=1}^{n/2} \bigl((6e)^{1/5}\frac{k}{n}\bigr)^{5k/6} \\
+        \end{array}\]
+        where we pick $d = 12$ in (1).
+
+        Let $C = (6e)^{1/5} \approx 1.748$,
+
+        For small $k \approx 1$, the inner term is
+        $(C\frac{k}{n})^{5k/6} \approx (1.748 \times \frac{1}{n})^{5/6} \approx
+        0$ as $n \to \infty$.  
+
+        For big $k \approx n/2$, the inner term is $(C\frac{k}{n})^{5k/6}
+        \approx (1.748 \times \frac{1}{2})^{5n/12} \approx (0.87)^{5n/12}
+        \approx 0$ as $n \to \infty$.
+
+        Therefore, we have $\Pr[\text{fail}] \approx 0$ as $n \to \infty$.
+        Thus the claim is true w.h.p.
+    
+    \end{proof}
+
+    \item 
+    \begin{proof}
+        We construct an expander using the following steps:
+        \begin{enumerate}
+            \item Construct a random graph by forming d=12 perfect matchings, and
+            \item Add self loops to each vertex.
+        \end{enumerate}
+
+        By previous steps, this algorithm gives us a graph with constant
+        conductance of $1/6d = 1/72$.
+
+        By Cheeger's inequality, $\lambda_2 \ge \frac{\Psi(G)^2}{2} = \frac{1}{10386}$.
+
+        After adding self-loops, we have $\lambda_2' = \lambda_2/2 = \frac{1}{20772}$
+
+        In the worst case, the random-walk matrix has smallest eigenvalue $\mu_n
+        = -1$, which means $\lambda_n = 1 - \mu_n = 2$. Adding self-loop gives us
+        $\lambda_n' = (\lambda_n)/2 = 1$.
+
+        Thus, the graph has a constant spectral gap of $$\gamma = 1 -
+        \min{(\lambda_2', 2-\lambda_n')} = 1/20772$$ and thus is an expander.
+
+    \end{proof}
 
 \end{enumerate}
 
 \newpage
 \section*{Problem 4.8}
 
+\begin{enumerate}
+    \item 
+    \begin{proof}
+
+        $G$ is $\vert F\vert$-regular because for each vertex $(a,b)$, there is
+        an edge to $(c,d)$ iff $ac = b+d$. We observe that for a particular $c$,
+        there is only one $d$ that satisfies the equation. There are exactly
+        $\vert F\vert$ choices of $c$. Thus for each vertex, there are exactly
+        $\vert F\vert$ edges. Thus $G$ is $\vert F\vert$-regular.
+
+        \vspace{2em}
+
+        To prove that $\lambda(G) \le \frac{1}{\sqrt{\vert F\vert}}$, we
+        consider the power graph of $G$, $G^2$, and show that $\lambda(G^2) \le
+        \frac{1}{\vert F\vert}$.
+
+        We analyze a pair of vertex $(a,b)$ and $(e,f)$ in $G^2 = G \times G$,
+        where $G = (V,E)$. There must be some vertex $(c,d)$ in $G$ such that
+        $$\{(a,b), (c,d)\}, \{(c,d), (e,f)\} \in E$$
+
+        By the definition of $G$, we know that $ac = b + d$ and $ce = d + f$. We
+        derive from the above equations that $c(a-e) = b-f$.
+
+        Let $a,b,e,f$ be fixed coordinates, we solve for $c$ and have the
+        following scenarios:
+
+        \begin{enumerate}
+
+            \item $a-e = 0$, $b-f \ne 0$: In this case there is no solution,
+            where the adjacency matrix $A_{((a,b),(e,f))}$ of $G^2$ is $0$.
+
+            \item $a-e = 0$, $b-f = 0$: In this case there are $\vert F\vert$
+            possible solutions for $c$, and thus $A_{((a,b),(e,f))}$ is $\vert
+            F\vert$.
+
+            \item $a-e \ne 0$, $b-f \ne 0$: In this case there is exactly one
+            solution $c = \frac{b-f}{a-e}$, and $A_{((a,b),(e,f))}$ is $1$.
+
+        \end{enumerate}
+
+        Observe that for all entries $A_{((a,b),(e,f))} \ne 1$, we always have
+        $a = e$. If we order all vertices in the adjacency matrix by their
+        coordinates, entries with $a = e$ correspond to squares of width $\vert F\vert$ in $A$ along its diagonal. 
+
+        A is of the form 
+        \[
+            A = \begin{bmatrix}
+            A_{1} & \cdots & 1 \\
+            \vdots & \ddots & \vdots \\
+            1 & \cdots & A_{\vert F \vert}
+            \end{bmatrix}
+        \]
+
+        where $A_i$ is a square matrix of size $\vert F\vert \times \vert
+        F\vert$ and whose entries contains either $0$ or $\vert F\vert$.
+
+        Since $G$ is $\vert F\vert$-regular, $G^2$ has degree $\vert F\vert^2$.
+        We can normalize $A$, retrieving $R = AD^{-1} = A/\vert F\vert^2$.
+
+        R is of the form 
+        \[
+            R = \begin{bmatrix}
+            R_{1} & \cdots & 1/\vert F\vert^2\\
+            \vdots & \ddots & \vdots \\
+            1/\vert F\vert^2 & \cdots & R_{\vert F \vert}
+            \end{bmatrix}
+        \]
+
+        where $R_i$ is a square matrix of size $\vert F\vert \times \vert
+        F\vert$ and whose entries contains either $0$ (off-diagonal) or $1/\vert F\vert$ (diagonal).
+
+        By theorem 19.11, the random walk matrix of $G^2$, $R = AD^{-1}$, has
+        the largest eigenvalue $\mu_1 = 1$. We also know that for any random
+        walk matrix, $R^T \mathds{1} = \mathds{1}$. Since $G^2$ is regular, $R$
+        is symmetric, thus $R \mathds{1} = \mathds{1}$, and $\mathds{1}$
+        corresponds to the stationary distribution of $G^2$.
+        
+        We perform eigen-decomposition on the symmetric matrix $R$ following
+        theorem 21.5: Let $S = (\mathds{1} \otimes \mathds{1})/\vert F\vert^2$, then $R = S + E$,
+        where $E = R - S$ is the non-stationary portion of $R$ in the form of
+
+        \[
+            E = R - S = \begin{bmatrix}
+            R_{1} - \frac{1}{\vert F\vert^2} & \cdots & 0 \\
+            \vdots & \ddots & \vdots \\
+            0 & \cdots & R_{\vert F \vert} - \frac{1}{\vert F\vert^2}
+            \end{bmatrix}
+        \]
+
+        where each $R_i$ contains entries either $-1$ or $\frac{1}{\vert F\vert}
+        - 1$. More specifically, each $R_i - 1$ is of the form 
+        \[ R_i - S_i = R_i - \frac{1}{\vert F\vert^2} = \begin{bmatrix}
+            \frac{1}{\vert F\vert} - \frac{1}{\vert F\vert^2} & \cdots & - \frac{1}{\vert F\vert^2} \\
+            \vdots & \ddots & \vdots \\
+            -\frac{1}{\vert F\vert^2} & \cdots & \frac{1}{\vert F\vert} - \frac{1}{\vert F\vert^2}
+        \end{bmatrix} \]
+
+        Since $E$ only contains non-zero entries along the diagonal blocks, its
+        largest eigenvector is the largest among that of $R_i - S_i$.
+
+        Note that $S_i$ is the stationary component of $R_i - S_i$
+        
+        compute eigenvalues, conclude that it is at most $\frac{1}{\vert
+        F\vert}$. Thus the second largest eigenvalue of $G^2$ is at most
+        $\lambda(G^2) = \frac{1}{\vert F\vert}$.
+
+    \end{proof}
+
+    \item 
+    \begin{proof}
+        TODO:
+        zig-zagging helps maintain constant degree
+    \end{proof}
+
+\end{enumerate}
+
 \newpage
 \section*{Problem 4.2}
+
+\begin{enumerate}
+    \item \begin{proof}
+        For an independent set of vertices $S \subseteq G$, we have
+        $$\mathds{1}_S^T A \mathds{1}_S = 0$$
+
+        TODO: split $\mathds{1}_S$ into two components, parallel and orthogonal
+        to the 1 vector (Why?)
+        \end{proof}
+    \item \begin{proof}
+
+        Observe that for a properly colored graph, all vertices of the same
+        color must an independent set. Suppose the graph can be colored by less
+        than $\frac{1+\lambda}{\lambda}$ colors, then there must be less than
+        $\frac{1+\lambda}{\lambda}$ independent sets, which means the average
+        size of an independent set is greater than $N\frac{\lambda}{1+\lambda}$,
+        which implies there is at least one independent set $S$ such that $\vert
+        S \vert > N\frac{\lambda}{1+\lambda}$, which is a contradiction
+        according to the previous question.
+    \end{proof}
+
+    \item \begin{proof}
+
+        We simulate a random walk on the graph, starting with an initial
+        distribution $s_0 = \mathds{1}_u$ where $u$ is the starting vertex.
+
+        The stationary distribution of the graph is $s = \begin{bmatrix}
+            1/N \\ 1/N \\ \vdots \\ 1/N
+        \end{bmatrix}$.
+
+        By theorem 21.11, we have that $\| R^ks_0 - s \| \le (1 - \gamma)^k
+        \sqrt{\Delta_{max}/\Delta_{min}}$.
+        
+        Since we have a regular graph, $\Delta_{max} = \Delta_{min}$, and
+        $\sqrt{\Delta_{max}/\Delta_{min}} = 1$.
+        
+        Thus $\| R^ks_0 - s \| =  \| R^ks_0 - \frac{1}{N} \| \le (1 - \gamma)^k = \lambda^k$.
+
+        Observe that for some constant $C$, the graph has diameter $C k$ iff
+        $R^ks_0$ has no zero entries, which means every vertex has a non-zero
+        probability of being explored after $k$ steps.
+
+        We solve for $(R^ks_0)_v > 0$. We
+
+        The diameter of the graph 
+
+    \end{proof}
+
+
+
+\end{enumerate}
 
 \end{document}
