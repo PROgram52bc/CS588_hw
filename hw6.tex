@@ -396,20 +396,28 @@
         corresponds to the stationary distribution of $G^2$.
         
         We perform eigen-decomposition on the symmetric matrix $R$ following
-        theorem 21.5: Let $S = (\mathds{1} \otimes \mathds{1})/\vert F\vert^2$, then $R = S + E$,
-        where $E = R - S$ is the non-stationary portion of $R$ in the form of
+        theorem 21.5: Let $S = (\mathds{1} \otimes \mathds{1})/\vert F\vert^2$,
+        then $R = S + E$, where $E = R - S$ is the non-stationary portion of $R$
+        in the form of
 
         \[
-            E = R - S = \begin{bmatrix}
+            E = R - S = 
+            \begin{bmatrix}
+            B_1 & \cdots & 0 \\
+            \vdots & \ddots & \vdots \\
+            0 & \cdots & B_{\vert F \vert}
+            \end{bmatrix} =
+            \begin{bmatrix}
             R_{1} - \frac{1}{\vert F\vert^2} & \cdots & 0 \\
             \vdots & \ddots & \vdots \\
             0 & \cdots & R_{\vert F \vert} - \frac{1}{\vert F\vert^2}
             \end{bmatrix}
         \]
 
-        where each $R_i$ contains entries either $-1$ or $\frac{1}{\vert F\vert}
-        - 1$. More specifically, each $R_i - 1$ is of the form 
-        \[ R_i - S_i = R_i - \frac{1}{\vert F\vert^2} = \begin{bmatrix}
+        More specifically, each $B_i = R_i - \frac{1}{\vert F\vert^2}$ is of the
+        form 
+
+        \[ B_i = R_i - \frac{1}{\vert F\vert^2} = \begin{bmatrix}
             \frac{1}{\vert F\vert} - \frac{1}{\vert F\vert^2} & \cdots & - \frac{1}{\vert F\vert^2} \\
             \vdots & \ddots & \vdots \\
             -\frac{1}{\vert F\vert^2} & \cdots & \frac{1}{\vert F\vert} - \frac{1}{\vert F\vert^2}
@@ -418,11 +426,42 @@
         Since $E$ only contains non-zero entries along the diagonal blocks, its
         largest eigenvector is the largest among that of $R_i - S_i$.
 
-        Note that $S_i$ is the stationary component of $R_i - S_i$
-        
-        compute eigenvalues, conclude that it is at most $\frac{1}{\vert
-        F\vert}$. Thus the second largest eigenvalue of $G^2$ is at most
-        $\lambda(G^2) = \frac{1}{\vert F\vert}$.
+        Let $B_i = R_i - S_i$ be one of the diagonal blocks, to analyze the
+        eigenvector of $B_i$, we observe that for $v_1 = \mathds{1}$, we have
+        \[\begin{array}{rll}
+            B_i v_1 &\overset{(1)}{=}& (\frac{1}{\vert F\vert} - \frac{1}{\vert F\vert^2}) \mathds{1} - \frac{1}{\vert F\vert^2} (\vert F\vert - 1) \mathds{1} \\
+            &=& (\frac{1}{\vert F\vert} - \frac{1}{\vert F\vert^2} - \frac{\vert F\vert - 1}{\vert F\vert^2}) \mathds{1} \\
+            &=& (\frac{\vert F\vert - 1 - (\vert F\vert - 1)}{\vert F\vert^2}) \mathds{1} \\
+            &=& 0 \\
+            &=& 0v_1 \\
+        \end{array} \]
+
+        where in (1), we sum up each column of $B_i$, and observe that on each
+        row, there is exactly one entry with value $\frac{1}{\vert
+        F\vert}-\frac{1}{\vert F\vert^2}$, and $\vert F\vert-1$ entries in each
+        row with value $\frac{1}{\vert F\vert^2}$.
+
+        Thus $v_1 = \mathds{1}$ is an eigenvector of $B_i$ with eigenvalue $0$.
+
+        We now observe that for any $v_2$ such that $v_1 \perp v_2$ ($\langle
+        v_1,v_2 \rangle = 0$), we have
+        \[ \begin{array}{rll}
+            B_i v_2 &=& R_iv_2 - \frac{1}{\vert F\vert^2} (v_1 v_1^T) v_2 \\
+            &=& R_iv_2 - \frac{1}{\vert F\vert^2} v_1 (v_1^T v_2) \\
+            &=& \frac{1}{\vert F\vert}v_2 - \frac{1}{\vert F\vert^2}v_1\langle v_1,v_2 \rangle \\
+            &\overset{(2)}{=}& \frac{1}{\vert F\vert}v_2 \\
+        \end{array} \]
+        where (2) is because $\langle v_1, v_2 \rangle = 0$.
+
+        Thus $v_2$ is an eigenvector of $B_i$ with eigenvalue $\frac{1}{\vert F\vert}$.
+
+        We thus established that all vectors perpendicular to $\mathds{1}$ are
+        eigenvectors of $B_i$ with eigenvalue $\frac{1}{\vert F\vert}$.
+
+        Therefore, the maximum eigenvalue of $B_i$ is $\frac{1}{\vert F\vert}$.
+
+        Thus the second largest eigenvalue of $G^2$ is at most
+        $\lambda(G^2) \le \frac{1}{\vert F\vert}$.
 
     \end{proof}
 
