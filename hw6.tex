@@ -468,12 +468,32 @@
     \item 
     \begin{proof}
 
-        We can multiply $G^2$ with itself 4 times, that is $G^2 \times G^2
-        \times G^2 \times G^2$, which would give us a $(\vert F\vert^8, \cdots,
-        \cdots)$
+    We construct the graph by applying Tensor Powers and the Zig-Zag product to the graph $G$ from Part 1 (where $N_G = |F|^2$, $\text{deg}(G) = |F|$, and $\lambda(G) \le 1/\sqrt{|F|}$).
 
-        TODO:
-        zig-zagging helps maintain constant degree
+    Let $G_1 = G^{\otimes 4}$. Its parameters are:
+    \begin{itemize}
+        \item Size: $N_{G_1} = (N_G)^4 = |F|^8$.
+        \item Degree: $D_{G_1} = (D_G)^4 = |F|^4$.
+        \item Expansion: $\lambda(G_1) = \lambda(G) \le 1/\sqrt{|F|}$.
+    \end{itemize}
+
+    Let $H$ be a regular graph with $|F|^4$ vertices and degree $d_H = |F|^{3/4}$. Since $|F|$ is a sufficiently large constant, we can choose $H$ to be an expander with $\lambda(H) \le 3/8$.
+
+    Define $G' = G_1 \circ H$. The parameters of $G'$ are:
+    \begin{enumerate}
+        \item Degree: $D' = d_H^2 = (|F|^{3/4})^2 = |F|^{1.5}$. Set the target constant $D = |F|^{1.5}$.
+        \item Size: $N' = N_{G_1} \cdot N_H = |F|^8 \cdot |F|^4 = |F|^{12}$. Note that $D^8 = (|F|^{1.5})^8 = |F|^{12}$, so $N' = D^8$.
+        \item Expansion: Using the Zig-Zag bound $\lambda(G') \le \lambda(G_1) + 2\lambda(H)$:
+        \[
+        \lambda(G') \le \frac{1}{\sqrt{|F|}} + 2(3/8) = \frac{1}{\sqrt{|F|}} + \frac{3}{4}.
+        \]
+        For sufficiently large $|F|$ (specifically $|F| \ge 64$), we have $1/\sqrt{|F|} \le 1/8$, so $\lambda(G') \le 1/8 + 3/4 = 7/8$.
+    \end{enumerate}
+
+    Thus $G'$ has parameters $(D^8, D, 7/8)$.
+
+
+
     \end{proof}
 
 \end{enumerate}
