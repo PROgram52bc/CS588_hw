@@ -284,6 +284,8 @@
 
         Therefore, we have $\Pr[\text{fail}] \approx 0$ as $n \to \infty$.
         Thus the claim is true w.h.p.
+
+        \vspace{-1.5em}
     
     \end{proof}
 
@@ -426,6 +428,11 @@
 
     \item 
     \begin{proof}
+
+        We can multiply $G^2$ with itself 4 times, that is $G^2 \times G^2
+        \times G^2 \times G^2$, which would give us a $(\vert F\vert^8, \cdots,
+        \cdots)$
+
         TODO:
         zig-zagging helps maintain constant degree
     \end{proof}
@@ -473,12 +480,33 @@
         Thus $\| R^ks_0 - s \| =  \| R^ks_0 - \frac{1}{N} \| \le (1 - \gamma)^k = \lambda^k$.
 
         Observe that for some constant $C$, the graph has diameter $C k$ iff
-        $R^ks_0$ has no zero entries, which means every vertex has a non-zero
-        probability of being explored after $k$ steps.
+        $R^ks_0$ has no zero entries, which means every vertex must have a
+        non-zero probability of being explored after $k$ steps.
 
-        We solve for $(R^ks_0)_v > 0$. We
+        Given $\| R^ks_0 - \frac{1}{N} \| \le \lambda^k$, we also know that the
+        point-wise difference is at most the $\ell_2$ norm of the error:
 
-        The diameter of the graph 
+        $$|(R^k s_0)_v - \frac{1}{N}| \le \| R^k s_0 - \frac{1}{N} \| \le \lambda^k$$
+        
+        % the worst case
+        % scenario is $$(R^ks_0)_v - \frac{1}{N} = -\lambda^k$$ so that $\| R^ks_0
+        % - \frac{1}{N} \| \le \lambda^k$ still holds, and $$\sum_{i \ne
+        % v}(R^ks_0)_i = 1 - \frac{1}{N} + \lambda^k$$ so that probabilities sum
+        % to 1. 
+
+        For $(R^ks_0)_v > 0$ to be true, the worst case scenario is when
+        $(R^ks_0)_v - \frac{1}{N} = -\lambda^k$, in which case we must have $0 <
+        \frac{1}{N} - \lambda^k$, thus 
+
+        $$\lambda^k < \frac{1}{N}$$
+        $$k \log \lambda < \log \frac{1}{N}$$
+        $$k > -\frac{\log N}{\log \lambda}$$
+        $$k > {\log_{1/\lambda} N}$$
+
+        Thus, we have shown that a random walk takes at most $k >
+        {\log_{1/\lambda} N} = O({\log_{1/\lambda} N})$ steps to visit every
+        node, which is an upper bound for the diameter of the graph.
+        
 
     \end{proof}
 
