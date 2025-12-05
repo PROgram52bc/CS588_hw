@@ -484,10 +484,48 @@
 \begin{enumerate}
     \item \begin{proof}
         For an independent set of vertices $S \subseteq G$, we have
-        $$\mathds{1}_S^T A \mathds{1}_S = 0$$
 
-        TODO: split $\mathds{1}_S$ into two components, parallel and orthogonal
-        to the 1 vector (Why?)
+        $$\mathds{1}_S^T R \mathds{1}_S = 0$$
+
+        We split $\mathds{1}_S = v_1 + v_2$ s.t. $v_1 = \frac{\langle
+        \mathds{1}_S, \mathds{1}\rangle}{\langle \mathds{1}, \mathds{1}\rangle}
+        \mathds{1}$ and $v_1 \perp v_2$.
+
+        Substituting, we have 
+        \[\begin{array}{lll}
+            \mathds{1}_S^T R \mathds{1}_S \\
+            &=& (v_1 + v_2)^T R (v_1 + v_2) \\
+            &\overset{(1)}{=}& (v_1^T R v_1) + (v_2^T R v_2) \\
+            &\overset{(2)}{=}& \langle v_1, v_1 \rangle + \langle v_2, R v_2 \rangle \\
+            &=& 0
+        \end{array}
+        \]
+
+        where (1) is because $v_1 \perp v_2$, and cross terms cancels out, and
+        (2) is because $v_1$ is the eigenvector of $R$ with eigenvalue 1 due to
+        regularity.
+
+        Rearranging the above, we have
+        $$ \| v_1\|^2 + \langle v_2, R v_2 \rangle = 0$$
+
+        Observe that $\vert \langle v_2, R v_2 \rangle \vert \le \lambda
+        \|v_2\|^2$ due to spectral expansion properties, we have
+        $$ \| v_1\|^2 = \vert \langle v_2, R v_2 \rangle \vert \le \lambda \|v_2\|^2$$
+
+        We also have $v_1 = \begin{bmatrix}
+            \vert S\vert/N \\ \vdots \\ \vert S\vert/N \\ 
+        \end{bmatrix}$ and thus
+        $$\| v_1\|^2 = (\vert S\vert/N)^2 N = \vert S\vert^2/N$$
+
+        We also have $$\| v_2 \|^2 = \| \mathds{1}_S \|^2 - \| v_1 \|^2 = \vert
+        S\vert - \vert S\vert^2/N$$
+
+        Substituting the quantities into the previous inequality, we get 
+        $$ \vert S\vert^2/N \le \lambda (\vert S\vert - \vert S\vert^2/N)$$
+
+        Solving the equation, we have $$\vert S\vert \le \frac{\lambda}{\lambda
+        + 1}N$$
+
         \end{proof}
     \item \begin{proof}
 
